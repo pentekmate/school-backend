@@ -1,5 +1,6 @@
 services:
-    laravel.test:
+    schoolBackend:
+        container_name: school-backend 
         build:
             context: './vendor/laravel/sail/runtimes/8.5'
             dockerfile: Dockerfile
