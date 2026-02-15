@@ -43,6 +43,29 @@ return new class extends Migration
                 ->references('id')->on('task_types')
                 ->cascadeOnDelete();
         });
+
+        Schema::table('classroom_worksheet', function (Blueprint $table) {
+            $table->foreign('classroom_id')->references('id')->on('classrooms')->cascadeOnDelete();
+            $table->foreign('worksheet_id')->references('id')->on('worksheets')->cascadeOnDelete();
+
+        });
+
+        Schema::table('students', function (Blueprint $table) {
+            $table->foreign('classroom_id')->references('id')->on('classrooms')->cascadeOnDelete();
+        });
+
+        Schema::table('task_groupings', function (Blueprint $table) {
+            $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
+        });
+
+        Schema::table('groups', function (Blueprint $table) {
+            $table->foreign('task_grouping_id')->references('id')->on('task_groupings')->cascadeOnDelete();
+        });
+
+        Schema::table('group_items', function (Blueprint $table) {
+            $table->foreign('group_id')->references('id')->on('groups')->cascadeOnDelete();
+        });
+
     }
 
     public function down(): void
@@ -64,6 +87,27 @@ return new class extends Migration
 
         Schema::table('classrooms', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
+        });
+
+        Schema::table('classroom_worksheet', function (Blueprint $table) {
+            $table->dropForeign(['classroom_id']);
+            $table->dropForeign(['worksheet_id']);
+        });
+
+        Schema::table('students', function (Blueprint $table) {
+            $table->dropForeign(['classroom_id']);
+        });
+
+        Schema::table('task_grouping', function (Blueprint $table) {
+            $table->dropForeign(['task_id']);
+        });
+
+        Schema::table('groups', function (Blueprint $table) {
+            $table->dropForeign(['task_grouping_id']);
+        });
+
+        Schema::table('group_items', function (Blueprint $table) {
+            $table->dropForeign(['group_id']);
         });
     }
 };

@@ -11,11 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name', 30);
+        Schema::create('classroom_worksheet', function (Blueprint $table) {
+            $table->unsignedBigInteger('classroom_id');
+            $table->unsignedBigInteger('worksheet_id');
+
+            $table->primary(['classroom_id', 'worksheet_id']);
+
+            $table->index('classroom_id');
+            $table->index('worksheet_id');
         });
+
     }
 
     /**
@@ -23,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subjects');
+        //
     }
 };

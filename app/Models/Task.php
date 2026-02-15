@@ -8,10 +8,18 @@ class Task extends Model
 {
     //
 
-    public function task_type(){
-        return $this->belongsTo(Task_type::class,'task_type_id');
+    public function task_type()
+    {
+        return $this->belongsTo(Task_type::class, 'task_type_id');
     }
-    public function worksheet(){
-        return $this->belongsTo(Worksheet::class,'worksheet_id');
+
+    public function worksheet()
+    {
+        return $this->belongsTo(Worksheet::class, 'worksheet_id');
+    }
+
+    public function task_grouping()
+    {
+        return $this->belongsTo(Task_grouping::class, 'task_id');
     }
 }
