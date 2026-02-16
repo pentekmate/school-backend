@@ -53,7 +53,7 @@ services:
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
-        container_name: laravel_phpmyadmin
+        container_name: school-backend-phpmyadmin
         restart: always
         ports:
             - "8081:80"

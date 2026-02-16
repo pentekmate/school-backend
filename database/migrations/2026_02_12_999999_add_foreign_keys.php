@@ -66,6 +66,46 @@ return new class extends Migration
             $table->foreign('group_id')->references('id')->on('groups')->cascadeOnDelete();
         });
 
+        Schema::table('task_pairs', function (Blueprint $table) {
+            $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
+        });
+
+        Schema::table('pairs', function (Blueprint $table) {
+            $table->foreign('task_pair_id')->references('id')->on('task_pairs')->cascadeOnDelete();
+        });
+
+        Schema::table('task_shortAnswers', function (Blueprint $table) {
+            $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
+        });
+
+        Schema::table('task_shortAnswer_images', function (Blueprint $table) {
+            $table->foreign('task_shortAnswer_id')->references('id')->on('task_shortAnswers')->cascadeOnDelete();
+        });
+
+        Schema::table('task_shortAnswer_answers', function (Blueprint $table) {
+            $table->foreign('task_shortAnswer_image_id')->references('id')->on('task_shortAnswer_images')->cascadeOnDelete();
+        });
+
+        Schema::table('task_assignments', function (Blueprint $table) {
+            $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
+        });
+
+        Schema::table('task_assignment_images', function (Blueprint $table) {
+            $table->foreign('task_assignment_id')->references('id')->on('task_assignments')->cascadeOnDelete();
+        });
+
+        Schema::table('task_assignment_coordinates', function (Blueprint $table) {
+            $table->foreign('task_assignment_image_id')->references('id')->on('task_assignment_images')->cascadeOnDelete();
+        });
+
+        Schema::table('task_assignment_answers', function (Blueprint $table) {
+            $table->foreign('task_assignment_image_id')->references('id')->on('task_assignment_images')->cascadeOnDelete();
+        });
+
+        Schema::table('task_assignment_answers', function (Blueprint $table) {
+            $table->foreign('task_assignment_coordinate_id')->references('id')->on('task_assignment_coordinates')->cascadeOnDelete();
+        });
+
     }
 
     public function down(): void
@@ -109,5 +149,46 @@ return new class extends Migration
         Schema::table('group_items', function (Blueprint $table) {
             $table->dropForeign(['group_id']);
         });
+
+        Schema::table('task_pairs', function (Blueprint $table) {
+            $table->dropForeign(['task_id']);
+        });
+
+        Schema::table('pairs', function (Blueprint $table) {
+            $table->dropForeign(['task_pair_id']);
+        });
+
+        Schema::table('task_shortAnswers', function (Blueprint $table) {
+            $table->dropForeign(['task_id']);
+        });
+
+        Schema::table('task_shortAnswer_images', function (Blueprint $table) {
+            $table->dropForeign(['task_shortAnswer_id']);
+        });
+
+        Schema::table('task_shortAnswer_answers', function (Blueprint $table) {
+            $table->dropForeign(['task_shortAnswer_image_id']);
+        });
+
+        Schema::table('task_assignments', function (Blueprint $table) {
+            $table->dropForeign(['task_id']);
+        });
+
+        Schema::table('task_assignment_images', function (Blueprint $table) {
+            $table->dropForeign(['task_assignment_id']);
+        });
+
+        Schema::table('task_assignment_coordinates', function (Blueprint $table) {
+            $table->dropForeign(['task_assignment_image_id']);
+        });
+
+        Schema::table('task_assignment_answers', function (Blueprint $table) {
+            $table->dropForeign(['task_assignment_image_id']);
+        });
+
+        Schema::table('task_assignment_answers', function (Blueprint $table) {
+            $table->dropForeign(['task_assignment_answers']);
+        });
+
     }
 };

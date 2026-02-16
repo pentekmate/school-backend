@@ -22,4 +22,19 @@ class Task extends Model
     {
         return $this->belongsTo(Task_grouping::class, 'task_id');
     }
+
+    public function task_pair()
+    {
+        return $this->belongsTo(Task_Pair::class, 'task_id');
+    }
+
+    public function task_shortAnswer()
+    {
+        return $this->belongsTo(Task_shortAnswer::class, 'task_id');
+    }
+
+    public function task_assignment()
+    {
+        return $this->belongsTo(Task_assignment::class, 'task_id');
+    }
 }
