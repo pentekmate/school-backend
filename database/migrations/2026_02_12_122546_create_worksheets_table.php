@@ -22,8 +22,8 @@ return new class extends Migration
 
             $table->boolean('is_public');
             $table->string('password')->nullable();
-            $table->string('link');
-            $table->string('grade');
+            $table->string('link')->nullable(); // just for test
+            $table->string('grade')->nullable();
 
             $table->timestamps();
         });

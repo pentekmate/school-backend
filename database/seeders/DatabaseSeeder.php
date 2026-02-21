@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Worksheet;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +16,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::factory()->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            ClassRoomSeeder::class,
         ]);
+
+        $this->call([
+            SubjectSeeder::class,
+        ]);
+        $this->call([
+            TaskTypeSeeder::class,
+        ]);
+
+        Worksheet::factory()
+            ->count(1)
+            ->withTasks(6)
+            ->create();
     }
 }

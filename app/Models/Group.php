@@ -2,18 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
     //
+    use HasFactory;
+
     public function task_grouping()
     {
         return $this->belongsTo(Task_grouping::class, 'task_grouping_id');
     }
 
-    public function group_items()
+    public function items()
     {
-        return $this->hasMany(Group_Item::class, 'group_id');
+        return $this->hasMany(GroupItem::class, 'group_id');
     }
 }
