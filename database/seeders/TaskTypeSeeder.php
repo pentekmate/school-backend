@@ -14,8 +14,8 @@ class TaskTypeSeeder extends Seeder
     {
         Task_type::insert(
             [
-                ['id' => 1, 'name' => 'pairing', 'subject_id' => 1],
-                ['id' => 2, 'name' => 'grouping', 'subject_id' => 1],
+                ['id' => 1, 'name' => 'grouping', 'subject_id' => 1],
+                ['id' => 2, 'name' => 'pairing', 'subject_id' => 1],
                 ['id' => 3, 'name' => 'short_answer', 'subject_id' => 1],
                 ['id' => 4, 'name' => 'assignment', 'subject_id' => 1],
             ]);

@@ -5,6 +5,8 @@ namespace Database\Factories;
 use App\Models\Group;
 use App\Models\GroupItem;
 use App\Models\Task_grouping;
+use App\Models\Task_pair;
+use App\Models\Pair;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +22,7 @@ class TaskFactory extends Factory
     public function definition()
     {
         return [
-            'task_type_id' => fake()->numberBetween(1, 1),
+            'task_type_id' => fake()->numberBetween(1, 2),
             'task_title' => fake()->sentence(1),
             'task_description' => fake()->sentence(3),
         ];
@@ -42,11 +44,11 @@ class TaskFactory extends Factory
                         ->create();
                     break;
 
-                    // case 2: // PAIR
-                    //     TaskPair::factory()->create([
-                    //         'task_id' => $task->id
-                    //     ]);
-                    //     break;
+                    case 2: // PAIR
+                        Task_pair::factory()->for($task)->has(
+                            Pair::factory(),'pairs'
+                        )->create();
+                        break;
 
                     // case 3: // SHORT ANSWER
                     //     TaskShortAnswer::factory()->create([

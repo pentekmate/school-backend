@@ -1,0 +1,29 @@
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pair>
+ */
+class PairFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'text'=>fake()->text(5)
+        ];
+        
+        // $table->id();
+        //     $table->timestamps();
+        //     $table->unsignedBigInteger('task_pair_id');
+        //     $table->string('text', 50)->nullable();
+        //     $table->string('imgURL')->nullable();
+    }
+}

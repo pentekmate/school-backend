@@ -17,7 +17,15 @@ class Task_pairFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'feedback' => fake()->word(), // ha van name mező
         ];
+    }
+
+    public function withPairs($pairs =8 ){
+        return $this->has(
+            Pair::factory()
+            >count($pairs),
+            'pairs'
+        );
     }
 }
