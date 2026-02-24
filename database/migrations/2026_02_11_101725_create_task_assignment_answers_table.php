@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('task_assignment_answers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('task_assignment_image_id');
             $table->unsignedBigInteger('task_assignment_coordinate_id');
             $table->string('answer', 50);
+            $table->boolean('isCorrect');
         });
     }
 

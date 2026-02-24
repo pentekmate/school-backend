@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Group;
 use App\Models\GroupItem;
 use App\Models\Pair;
+use App\Models\Task_assignment;
 use App\Models\Task_grouping;
 use App\Models\Task_pair;
 use App\Models\Task_shortAnswer;
@@ -23,7 +24,7 @@ class TaskFactory extends Factory
     public function definition()
     {
         return [
-            'task_type_id' => fake()->numberBetween(1, 3),
+            'task_type_id' => fake()->numberBetween(4, 4),
             'task_title' => fake()->sentence(1),
             'task_description' => fake()->sentence(3),
         ];
@@ -58,11 +59,12 @@ class TaskFactory extends Factory
                         ->create();
                     break;
 
-                    // case 4: // ASSIGNMENT
-                    // TaskAssignment::factory()->create([
-                    //     'task_id' => $task->id,
-                    // ]);
-                    // break;
+                case 4: // ASSIGNMENT
+                    Task_assignment::factory()
+                        ->for($task)
+                        ->withImage(1)
+                        ->create();
+                    break;
             }
 
         });
