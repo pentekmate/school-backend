@@ -74,17 +74,22 @@ return new class extends Migration
             $table->foreign('task_pair_id')->references('id')->on('task_pairs')->cascadeOnDelete();
         });
 
-        Schema::table('task_shortAnswers', function (Blueprint $table) {
+
+
+        Schema::table('task_short_answers', function (Blueprint $table) {
             $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
         });
 
-        Schema::table('task_shortAnswer_images', function (Blueprint $table) {
-            $table->foreign('task_shortAnswer_id')->references('id')->on('task_shortAnswers')->cascadeOnDelete();
+        Schema::table('task_short_answer_questions', function (Blueprint $table) {
+            $table->foreign('task_short_answers_id')->references('id')->on('task_short_answers')->cascadeOnDelete();
         });
 
-        Schema::table('task_shortAnswer_answers', function (Blueprint $table) {
-            $table->foreign('task_shortAnswer_image_id')->references('id')->on('task_shortAnswer_images')->cascadeOnDelete();
+        Schema::table('task_short_answer_answers', function (Blueprint $table) {
+            $table->foreign('task_short_answer_question_id')->references('id')->on('task_short_answer_questions')->cascadeOnDelete();
         });
+
+
+
 
         Schema::table('task_assignments', function (Blueprint $table) {
             $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
@@ -158,16 +163,16 @@ return new class extends Migration
             $table->dropForeign(['task_pair_id']);
         });
 
-        Schema::table('task_shortAnswers', function (Blueprint $table) {
+        Schema::table('task_short_answers', function (Blueprint $table) {
             $table->dropForeign(['task_id']);
         });
 
-        Schema::table('task_shortAnswer_images', function (Blueprint $table) {
-            $table->dropForeign(['task_shortAnswer_id']);
+        Schema::table('task_short_answer_questions', function (Blueprint $table) {
+            $table->dropForeign(['task_short_answer_id']);
         });
 
-        Schema::table('task_shortAnswer_answers', function (Blueprint $table) {
-            $table->dropForeign(['task_shortAnswer_image_id']);
+        Schema::table('task_short_answer_answers', function (Blueprint $table) {
+            $table->dropForeign(['task_short_answer_question_id']);
         });
 
         Schema::table('task_assignments', function (Blueprint $table) {

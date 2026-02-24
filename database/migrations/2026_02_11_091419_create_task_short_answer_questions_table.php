@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('task_shortAnswer_images', function (Blueprint $table) {
+        Schema::create('task_short_answer_questions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('task_shortAnswer_id');
-            $table->string('imgURL');
+            $table->unsignedBigInteger('task_short_answers_id');
+            $table->string('imgURL')->nullable();
+            $table->string('question',50);
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_shortAnswer_images');
+        Schema::dropIfExists('task_short_answer_questions');
     }
 };
