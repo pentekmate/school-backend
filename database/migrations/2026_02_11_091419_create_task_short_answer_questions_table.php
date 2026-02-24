@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('task_short_answers_id');
             $table->string('imgURL')->nullable();
-            $table->string('question',50);
+            $table->string('question', 50);
         });
     }
 

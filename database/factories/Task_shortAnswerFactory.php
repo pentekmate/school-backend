@@ -17,12 +17,13 @@ class Task_shortAnswerFactory extends Factory
      */
     public function definition(): array
     {
-         return [
+        return [
             'feedback' => fake()->word(), // ha van name mező
         ];
     }
 
-    public function withQuestions($count =1){
+    public function withQuestions($count = 1)
+    {
         return $this->has(
             Task_shortAnswer_question::factory()
                 ->count($count)

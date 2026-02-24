@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Task_shortAnswer_answer extends Model
 {
@@ -12,6 +12,6 @@ class Task_shortAnswer_answer extends Model
 
     public function question()
     {
-        return $this->belongsTo(Task_shortAnswer_question::class,  'task_short_answer_question_id');
+        return $this->belongsTo(Task_shortAnswer_question::class, 'task_short_answer_question_id');
     }
 }

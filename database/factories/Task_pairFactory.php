@@ -21,10 +21,11 @@ class Task_pairFactory extends Factory
         ];
     }
 
-    public function withPairs($pairs =8 ){
+    public function withPairs($pairs = 8)
+    {
         return $this->has(
             Pair::factory()
-            >count($pairs),
+            > count($pairs),
             'pairs'
         );
     }

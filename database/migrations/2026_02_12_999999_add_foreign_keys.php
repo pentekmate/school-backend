@@ -74,8 +74,6 @@ return new class extends Migration
             $table->foreign('task_pair_id')->references('id')->on('task_pairs')->cascadeOnDelete();
         });
 
-
-
         Schema::table('task_short_answers', function (Blueprint $table) {
             $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
         });
@@ -87,9 +85,6 @@ return new class extends Migration
         Schema::table('task_short_answer_answers', function (Blueprint $table) {
             $table->foreign('task_short_answer_question_id')->references('id')->on('task_short_answer_questions')->cascadeOnDelete();
         });
-
-
-
 
         Schema::table('task_assignments', function (Blueprint $table) {
             $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();

@@ -18,10 +18,9 @@ class Task_shortAnswer_questionFactory extends Factory
     public function definition(): array
     {
         return [
-            'question'=>fake()->word(1)
+            'question' => fake()->word(1),
         ];
     }
-
 
     public function withAnswer()
     {

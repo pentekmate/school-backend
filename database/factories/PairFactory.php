@@ -17,9 +17,9 @@ class PairFactory extends Factory
     public function definition(): array
     {
         return [
-            'text'=>fake()->text(5)
+            'text' => fake()->text(5),
         ];
-        
+
         // $table->id();
         //     $table->timestamps();
         //     $table->unsignedBigInteger('task_pair_id');

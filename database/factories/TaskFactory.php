@@ -4,12 +4,10 @@ namespace Database\Factories;
 
 use App\Models\Group;
 use App\Models\GroupItem;
+use App\Models\Pair;
 use App\Models\Task_grouping;
 use App\Models\Task_pair;
-use App\Models\Pair;
 use App\Models\Task_shortAnswer;
-use App\Models\Task_shortAnswer_answer;
-use App\Models\Task_shortAnswer_question;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -47,18 +45,18 @@ class TaskFactory extends Factory
                         ->create();
                     break;
 
-                    case 2: // PAIR
-                        Task_pair::factory()->for($task)->has(
-                            Pair::factory(),'pairs'
-                        )->create();
-                        break;
+                case 2: // PAIR
+                    Task_pair::factory()->for($task)->has(
+                        Pair::factory(), 'pairs'
+                    )->create();
+                    break;
 
-                    case 3: // SHORT ANSWER
-                         Task_shortAnswer::factory()
+                case 3: // SHORT ANSWER
+                    Task_shortAnswer::factory()
                         ->for($task)
                         ->withQuestions(3)
                         ->create();
-                        break;
+                    break;
 
                     // case 4: // ASSIGNMENT
                     // TaskAssignment::factory()->create([
