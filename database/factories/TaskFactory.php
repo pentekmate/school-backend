@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Group;
-use App\Models\GroupItem;
 use App\Models\Pair;
 use App\Models\Task_assignment;
 use App\Models\Task_grouping;
@@ -24,7 +22,7 @@ class TaskFactory extends Factory
     public function definition()
     {
         return [
-            'task_type_id' => fake()->numberBetween(4, 4),
+            'task_type_id' => fake()->numberBetween(2, 2),
             'task_title' => fake()->sentence(1),
             'task_description' => fake()->sentence(3),
         ];
@@ -36,20 +34,14 @@ class TaskFactory extends Factory
 
             switch ($task->task_type_id) {
                 case 1: // GROUPING
-                    Task_grouping::factory()
-                        ->for($task) // ← ez állítja be a task_id-t
-                        ->has(
-                            Group::factory()
-                                ->has(GroupItem::factory()->count(3), 'items'),
-                            'groups'
-                        )
-                        ->create();
+                    Task_grouping::factory()->for($task)->withGroups(3)->create();
+
                     break;
 
                 case 2: // PAIR
-                    Task_pair::factory()->for($task)->has(
-                        Pair::factory(), 'pairs'
-                    )->create();
+                    Task_pair::factory()->for($task)->
+                    withPairGroups()
+                        ->create();
                     break;
 
                 case 3: // SHORT ANSWER

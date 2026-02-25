@@ -10,8 +10,8 @@ class Pair extends Model
     //
     use HasFactory;
 
-    public function task_pair()
+    public function group()
     {
-        return $this->belongsTo(Task_pair::class, 'task_pair_id');
+        return $this->belongsTo(Pair_groups::class, 'pair_group_id');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\WorksheetResource;
 use App\Models\Worksheet;
 use Illuminate\Http\Request;
 
@@ -15,14 +16,12 @@ class WorkSheetController extends Controller
         $worksheets = Worksheet::with([
             'tasks.task_type',
             'tasks.task_grouping.groups.items',
-            // 'tasks.taskPair',
-            // 'tasks.taskShortAnswer',
-            // 'tasks.taskAssignment',
-            'user',
-            'subject',
+            'tasks.task_pair',
+            'tasks.task_shortAnswer.questions.answer',
+            'tasks.task_assignment.image.assignmentCoordinates.assignmentAnswer',
         ])->get();
 
-        return response()->json($worksheets);
+        return WorksheetResource::collection($worksheets);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Pair;
+use App\Models\Pair_groups;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,12 +23,11 @@ class Task_pairFactory extends Factory
         ];
     }
 
-    public function withPairs($pairs = 8)
+    public function withPairGroups($groups = 4)
     {
         return $this->has(
-            Pair::factory()
-            > count($pairs),
-            'pairs'
+            Pair_groups::factory()->count($groups)->withGroupItems(),
+            'pairGroups'
         );
     }
 }

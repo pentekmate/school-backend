@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Group;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,7 @@ class Task_GroupingFactory extends Factory
         ];
     }
 
-    public function withGroups($groupCount = 2, $itemsPerGroup = 3)
+    public function withGroups($groupCount = 3, $itemsPerGroup = 3)
     {
         return $this->has(
             Group::factory()

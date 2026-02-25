@@ -15,8 +15,8 @@ class Task_pair extends Model
         return $this->belongsTo(Task::class, 'task_id');
     }
 
-    public function pairs()
+    public function pairGroups()
     {
-        return $this->hasMany(Pair::class, 'task_pair_id');
+        return $this->hasMany(Pair_groups::class, 'task_pair_id');
     }
 }
