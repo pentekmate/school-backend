@@ -66,6 +66,9 @@ return new class extends Migration
             $table->foreign('group_id')->references('id')->on('groups')->cascadeOnDelete();
         });
 
+
+
+
         Schema::table('task_pairs', function (Blueprint $table) {
             $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
         });
@@ -74,9 +77,17 @@ return new class extends Migration
             $table->foreign('task_pair_id')->references('id')->on('task_pairs')->cascadeOnDelete();
         });
 
-        Schema::table('pairs', function (Blueprint $table) {
+        Schema::table('pair_questions', function (Blueprint $table) {
             $table->foreign('pair_group_id')->references('id')->on('pair_groups')->cascadeOnDelete();
         });
+
+
+        Schema::table('pair_answers', function (Blueprint $table) {
+            $table->foreign('pair_group_id')->references('id')->on('pair_groups')->cascadeOnDelete();
+        });
+
+
+
 
         Schema::table('task_short_answers', function (Blueprint $table) {
             $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
@@ -150,17 +161,27 @@ return new class extends Migration
             $table->dropForeign(['group_id']);
         });
 
+
+
+
         Schema::table('pairs', function (Blueprint $table) {
             $table->dropForeign(['pair_group_id']);
         });
-
-        Schema::table('pair_groups', function (Blueprint $table) {
-            $table->dropForeign(['task_pair_id']);
-        });
-
         Schema::table('task_pairs', function (Blueprint $table) {
             $table->dropForeign(['task_id']);
         });
+
+        Schema::table('pair_answers', function (Blueprint $table) {
+            $table->dropForeign(['task_pair_id']);
+        });
+        Schema::table('pair_questions', function (Blueprint $table) {
+            $table->dropForeign(['task_pair_id']);
+        });
+
+       
+
+
+
 
         Schema::table('task_short_answers', function (Blueprint $table) {
             $table->dropForeign(['task_id']);

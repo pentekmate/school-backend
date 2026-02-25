@@ -41,7 +41,7 @@ class TaskFactory extends Factory
                 case 2: // PAIR
                     Task_pair::factory()->for($task)->
                     withPairGroups()
-                        ->create();
+                    ->create();
                     break;
 
                 case 3: // SHORT ANSWER

@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pair_question>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pair_answer>
  */
-class PairQuestionFactory extends Factory
+class Pair_AnswerFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class PairQuestionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "answer"=>fake()->paragraph(1)
         ];
     }
 }

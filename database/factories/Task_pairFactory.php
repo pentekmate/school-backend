@@ -26,7 +26,7 @@ class Task_pairFactory extends Factory
     public function withPairGroups($groups = 4)
     {
         return $this->has(
-            Pair_groups::factory()->count($groups)->withGroupItems(),
+            Pair_groups::factory()->count($groups)->withQuestions()->withAnswers(),
             'pairGroups'
         );
     }

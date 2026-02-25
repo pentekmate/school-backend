@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('pair_questions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->unsignedBigInteger('pair_group_id');
+            $table->string('question');
+            $table->string('imgURL')->nullable();
         });
     }
 
