@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pairs', function (Blueprint $table) {
+        Schema::create('pair_questions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('pair_group_id');
-            $table->string('text', 50)->nullable();
-            $table->string('imgURL')->nullable();
-
         });
     }
 
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pairs');
+        Schema::dropIfExists('pair_questions');
     }
 };

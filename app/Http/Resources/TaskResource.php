@@ -89,6 +89,28 @@ class TaskResource extends JsonResource
             ];
         }
 
+        if ($this->task_type->name === 'pairing') {
+            return [
+                'task_title' => $this->task_title,
+                'task_description' => $this->task_description,
+                'task_type' => 'pairing',
+                'feedback' => $this->task_pair?->feedback,
+
+                'questionsOrImages' => $this->task_pair?->questions->map(function ($question) {
+                    return [
+                        'id' => $question->id,
+                        'question' => $question->question,
+                        'img' => $question->imgURL,
+                    ];
+                }),
+
+                'answers' => $this->task_shortAnswer?->questions
+                    ->map(fn ($q) => $q->answer?->answer)
+                    ->filter()
+                    ->values(),
+            ];
+        }
+
         return [];
     }
 }
