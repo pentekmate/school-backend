@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Worksheet extends Model
 {
     //
+    protected $fillable = ['title', 'user_id', 'classroom_id', 'subject_id', 'lifetime_minutes', 'max_time_to_resolve_minutes', 'grade', 'is_public'];
+
     use HasFactory;
 
     public function tasks()

@@ -1,0 +1,29 @@
+{
+  "title": "Magyar királyok párosítása",
+  "user_id": 1,
+  "classroom_id": 1,
+  "tasks": [
+    {
+      "task_title": "Uralkodók és tetteik",
+      "task_description": "Párosítsd az uralkodókat a hozzájuk kapcsolódó eseményekkel!",
+      "feedback": "Szép munka! Ellenőrizd még egyszer az évszámokat.",
+      "task_type_id": 2,
+      "pairing": {
+        "pairing_groups": [
+          {
+            "pair_question": "I. István",
+            "pair_answer": "A keresztény magyar állam megalapítása"
+          },
+          {
+            "pair_question": "Mátyás király",
+            "pair_answer": "Fekete sereg létrehozása"
+          },
+          {
+            "pair_question": "IV. Béla",
+            "pair_answer": "Az ország újjáépítése a tatárjárás után"
+          }
+        ]
+      }
+    }
+  ]
+}

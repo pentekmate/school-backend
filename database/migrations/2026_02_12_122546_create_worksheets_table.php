@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('worksheets', function (Blueprint $table) {
             $table->id();
+            $table->string('title')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('subject_id');
             $table->unsignedBigInteger('classroom_id');

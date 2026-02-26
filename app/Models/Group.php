@@ -10,6 +10,8 @@ class Group extends Model
     //
     use HasFactory;
 
+    protected $fillable = ['name'];
+
     public function task_grouping()
     {
         return $this->belongsTo(Task_grouping::class, 'task_grouping_id');

@@ -10,6 +10,8 @@ class GroupItem extends Model
     //
     use HasFactory;
 
+    protected $fillable = ['name'];
+
     public function group()
     {
         return $this->belongsTo(Group::class, 'group_id');

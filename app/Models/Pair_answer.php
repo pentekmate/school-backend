@@ -10,6 +10,8 @@ class Pair_answer extends Model
     /** @use HasFactory<\Database\Factories\PairAnswerFactory> */
     use HasFactory;
 
+    protected $fillable = ['answer', 'imgURL'];
+
     public function pair()
     {
         return $this->belongsTo(Pair_groups::class, 'pair_group_id');
