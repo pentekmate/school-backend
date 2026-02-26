@@ -10,6 +10,8 @@ class Task_assignment extends Model
     //
     use HasFactory;
 
+    protected $fillable = ['feedback'];
+
     public function task()
     {
         return $this->belongsTo(Task::class, 'task_id');

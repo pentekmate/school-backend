@@ -10,6 +10,8 @@ class Task_shortAnswer extends Model
     //
     use HasFactory;
 
+    protected $fillable = ['feedback'];
+
     public function task()
     {
         return $this->belongsTo(Task::class, 'task_id');

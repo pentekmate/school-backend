@@ -72,7 +72,7 @@ class TaskResource extends JsonResource
                 'task_description' => $this->task_description,
                 'task_type' => 'assignment',
 
-                'img' => $image?->imgURL, // vagy ami az oszlop neve
+                'img' => $image?->imageURL, // vagy ami az oszlop neve
 
                 'coordinates' => $image?->assignmentCoordinates
                     ->map(function ($coordinate) {
@@ -83,9 +83,14 @@ class TaskResource extends JsonResource
                     })->values(),
 
                 'answers' => $image?->assignmentCoordinates
-                    ->map(fn ($coordinate) => $coordinate->assignmentAnswer?->answer)
-                    ->filter()
-                    ->values(),
+                    ->flatMap(function ($coordinate) {
+                        return $coordinate->assignmentAnswers->map(function ($answer) {
+                            return [
+                                'answer' => $answer->answer,
+                                
+                            ];
+                        });
+                    }),
             ];
         }
 

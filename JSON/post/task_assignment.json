@@ -1,0 +1,23 @@
+{
+  "title": "Válaszmegjelölő feladatlap",
+  "user_id":1,
+  "classroom_id":1,
+  "tasks": [
+    {
+      "task_title": "Állatok csoportosítása",
+      "task_description": "Húzd a megfelelő csoportba",
+      "feedback":"ezazzzz",
+      "task_type_id": 4,
+      "assigment": {
+            "imgURL":"kepurl",
+            "coordinatesAndAnswers":[
+               {
+                "coordinate":"225,333",
+                "answer":"diszno"
+               }
+            ]
+
+      }
+    }
+  ]
+}

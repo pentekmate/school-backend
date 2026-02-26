@@ -19,7 +19,7 @@ class WorkSheetController extends Controller
             'tasks.task_grouping.groups.items',
             'tasks.task_pair',
             'tasks.task_shortAnswer.questions.answer',
-            'tasks.task_assignment.image.assignmentCoordinates.assignmentAnswer',
+            'tasks.task_assignment.image.assignmentCoordinates.assignmentAnswers',
         ])->get();
 
         return WorksheetResource::collection($worksheets);
@@ -89,6 +89,49 @@ class WorkSheetController extends Controller
                         $pairGroup->answers()->create([
                             'answer' => $groupData['pair_answer'],
                         ]);
+                    }
+                }
+
+                if ($taskData['task_type_id'] == 3) {
+
+                    $short_answer = $task->task_shortAnswer()->create([
+                        'feedback' => $taskData['feedback'],
+                    ]);
+
+                    foreach ($taskData['short_answer']['questions'] as $questionItem) {
+
+                        $sortAnwerQuestion = $short_answer->questions()->create([
+                            'question' => $questionItem['question'],
+                        ]);
+
+                        $sortAnwerQuestion->answer()->create([
+                            'answer' => $questionItem['answer'],
+                        ]);
+                    }
+                }
+                if ($taskData['task_type_id'] == 4) {
+
+                    $assignmentTask = $task->task_assignment()->create([
+                        'feedback' => $taskData['feedback'],
+                    ]);
+
+                    $assignmentImage = $assignmentTask->image()->create([
+                        'imageURL' => $taskData['assignment']['imgURL'],
+                    ]);
+
+                    foreach ($taskData['assignment']['coordinatesAndAnswers'] as $item) {
+
+                        $assigmentCoordinate = $assignmentImage->assignmentCoordinates()->create([
+                            'coordinate' => $item['coordinate'],
+                        ]);
+
+                        foreach ($item['answers'] as $coordinateAnswerItem) {
+
+                            $assigmentCoordinate->assignmentAnswer()->create([
+                                'answer' => $coordinateAnswerItem['answer'],
+                                'isCorrect' => $coordinateAnswerItem['isCorrect'],
+                            ]);
+                        }
                     }
                 }
             }

@@ -10,13 +10,15 @@ class Task_assignment_coordinate extends Model
     //
     use HasFactory;
 
+    protected $fillable = ['coordinate'];
+
     public function assignmentImage()
     {
         return $this->belongsTo(Task_assignment_image::class, 'task_assignment_image_id');
     }
 
-    public function assignmentAnswer()
+    public function assignmentAnswers()
     {
-        return $this->hasOne(Task_assignment_answer::class, 'task_assignment_coordinate_id');
+        return $this->hasMany(Task_assignment_answer::class, 'task_assignment_coordinate_id');
     }
 }

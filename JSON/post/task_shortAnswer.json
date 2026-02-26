@@ -1,0 +1,29 @@
+{
+  "title": "Rövidválaszos feladatlap",
+  "user_id": 1,
+  "classroom_id": 1,
+  "tasks": [
+    {
+      "task_title": "Állatos kérdések",
+      "task_description": "Válaszolj röviden a kérdésekre",
+      "task_type_id": 3,
+      "feedback": "Szép munka!",
+      "short_answer": {
+        "questions": [
+          {
+            "question": "Melyik állat ugat?",
+            "answer": "Kutya"
+          },
+          {
+            "question": "Melyik állat nyávog?",
+            "answer": "Macska"
+          },
+          {
+            "question": "Melyik állat repül?",
+            "answer": "Sas"
+          }
+        ]
+      }
+    }
+  ]
+}

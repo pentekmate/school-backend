@@ -10,6 +10,8 @@ class Task_assignment_image extends Model
     //
     use HasFactory;
 
+    protected $fillable = ['imageURL'];
+
     public function task_assignment()
     {
         return $this->belongsTo(Task_assignment::class, 'task_assignment_id');

@@ -9,6 +9,8 @@ class Task_assignment_answer extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['answer', 'isCorrect'];
+
     public function coordinate()
     {
         return $this->belongsTo(Task_assignment_coordinate::class, 'task_assignment_coordinate_id');

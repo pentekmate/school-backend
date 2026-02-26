@@ -10,6 +10,8 @@ class Task_shortAnswer_question extends Model
     //
     use HasFactory;
 
+    protected $fillable = ['question', 'imgURL'];
+
     public function shortAnswer()
     {
         return $this->belongsTo(Task_shortAnswer::class, 'task_short_answers_id');
