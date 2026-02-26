@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-
-use App\Models\Pair_question;
 use App\Models\Pair_answer;
+use App\Models\Pair_question;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,14 +24,17 @@ class Pair_GroupsFactory extends Factory
 
     }
 
-     public function withQuestions($itemsPerGroup=2){
+    public function withQuestions($itemsPerGroup = 2)
+    {
         return $this->has(
-            Pair_question::factory()->count($itemsPerGroup),'questions'
+            Pair_question::factory()->count($itemsPerGroup), 'questions'
         );
     }
-     public function withAnswers($itemsPerGroup=2){
+
+    public function withAnswers($itemsPerGroup = 2)
+    {
         return $this->has(
-            Pair_answer::factory()->count($itemsPerGroup),'answers'
+            Pair_answer::factory()->count($itemsPerGroup), 'answers'
         );
     }
 }

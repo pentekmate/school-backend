@@ -1,0 +1,253 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "user_id": 1,
+            "subject_id": 1,
+            "classroom_id": 1,
+            "lifetime_minutes": 60,
+            "max_time_to_resolve_minutes": 45,
+            "is_public": 1,
+            "grade": "1",
+            "tasks": [
+                {
+                    "task_title": "Eum illo.",
+                    "task_description": "Dolorem quibusdam et ut.",
+                    "task_type": "shortAnswer",
+                    "feedback": "quia",
+                    "questionsOrImages": [
+                        {
+                            "id": 1,
+                            "question": "doloribus",
+                            "img": null
+                        },
+                        {
+                            "id": 2,
+                            "question": "quod",
+                            "img": null
+                        },
+                        {
+                            "id": 3,
+                            "question": "vitae",
+                            "img": null
+                        }
+                    ],
+                    "answers": [
+                        "inventore",
+                        "et",
+                        "ut"
+                    ]
+                },
+                {
+                    "task_title": "Ex.",
+                    "task_description": "Dolores impedit est dicta.",
+                    "task_type": "shortAnswer",
+                    "feedback": "incidunt",
+                    "questionsOrImages": [
+                        {
+                            "id": 4,
+                            "question": "tenetur",
+                            "img": null
+                        },
+                        {
+                            "id": 5,
+                            "question": "quod",
+                            "img": null
+                        },
+                        {
+                            "id": 6,
+                            "question": "enim",
+                            "img": null
+                        }
+                    ],
+                    "answers": [
+                        "dolor",
+                        "animi",
+                        "necessitatibus"
+                    ]
+                },
+                {
+                    "task_title": "Dolorum.",
+                    "task_description": "Dicta vitae dolorem.",
+                    "task_type": "shortAnswer",
+                    "feedback": "cumque",
+                    "questionsOrImages": [
+                        {
+                            "id": 7,
+                            "question": "consequatur",
+                            "img": null
+                        },
+                        {
+                            "id": 8,
+                            "question": "dignissimos",
+                            "img": null
+                        },
+                        {
+                            "id": 9,
+                            "question": "dignissimos",
+                            "img": null
+                        }
+                    ],
+                    "answers": [
+                        "qui",
+                        "rerum",
+                        "optio"
+                    ]
+                },
+                {
+                    "task_title": "Magnam.",
+                    "task_description": "Quia aut eaque dolor numquam.",
+                    "task_type": "pairing",
+                    "feedback": "et",
+                    "pairQuestions": [
+                        {
+                            "id": 1,
+                            "question": "Et nam accusantium consequuntur voluptatibus doloremque dolorum.",
+                            "img": null
+                        },
+                        {
+                            "id": 2,
+                            "question": "Numquam recusandae mollitia blanditiis fugit voluptas est.",
+                            "img": null
+                        },
+                        {
+                            "id": 3,
+                            "question": "Corrupti ea in quia. Molestiae porro nemo fuga.",
+                            "img": null
+                        },
+                        {
+                            "id": 4,
+                            "question": "Nihil quisquam architecto iusto architecto nam ut maxime. Neque numquam iure totam adipisci cum pariatur quas.",
+                            "img": null
+                        },
+                        {
+                            "id": 5,
+                            "question": "Eligendi ea consequatur quia magnam et eveniet. Minima quia velit deleniti eius modi eligendi eum.",
+                            "img": null
+                        },
+                        {
+                            "id": 6,
+                            "question": "Officiis eveniet dolor cumque ratione pariatur molestias. Laboriosam nulla beatae sed est inventore maiores.",
+                            "img": null
+                        },
+                        {
+                            "id": 7,
+                            "question": "Ab sint eum illo.",
+                            "img": null
+                        },
+                        {
+                            "id": 8,
+                            "question": "Ut aliquid suscipit veritatis sed consequatur asperiores illo dolores.",
+                            "img": null
+                        }
+                    ],
+                    "pairAnswers": [
+                        {
+                            "id": 1,
+                            "answer": "Excepturi commodi quaerat quibusdam.",
+                            "img": null
+                        },
+                        {
+                            "id": 2,
+                            "answer": "Et deserunt fugiat excepturi et.",
+                            "img": null
+                        },
+                        {
+                            "id": 3,
+                            "answer": "Nihil quia reprehenderit eos at veritatis aliquam deleniti. Est numquam qui amet.",
+                            "img": null
+                        },
+                        {
+                            "id": 4,
+                            "answer": "Necessitatibus est eius et animi totam facere fugit.",
+                            "img": null
+                        },
+                        {
+                            "id": 5,
+                            "answer": "Odit et cupiditate quibusdam illum minima unde. Et vel quaerat similique sequi officiis ad hic.",
+                            "img": null
+                        },
+                        {
+                            "id": 6,
+                            "answer": "Quos facilis numquam fugit asperiores illo eum.",
+                            "img": null
+                        },
+                        {
+                            "id": 7,
+                            "answer": "Ratione et nesciunt eum et inventore eos odio. Eos aliquam et autem quidem inventore eos quisquam.",
+                            "img": null
+                        },
+                        {
+                            "id": 8,
+                            "answer": "Sint perferendis sed aut. In nostrum ipsum libero odio.",
+                            "img": null
+                        }
+                    ]
+                },
+                {
+                    "task_title": "Quam.",
+                    "task_description": "Quisquam ut officia non.",
+                    "task_type": "assignment",
+                    "img": null,
+                    "coordinates": [
+                        {
+                            "id": 1,
+                            "coordinate": "1004,206"
+                        },
+                        {
+                            "id": 2,
+                            "coordinate": "763,227"
+                        },
+                        {
+                            "id": 3,
+                            "coordinate": "1069,875"
+                        },
+                        {
+                            "id": 4,
+                            "coordinate": "183,787"
+                        },
+                        {
+                            "id": 5,
+                            "coordinate": "1453,228"
+                        }
+                    ],
+                    "answers": [
+                        "consequuntur",
+                        "quisquam",
+                        "aut",
+                        "molestias",
+                        "id"
+                    ]
+                },
+                {
+                    "task_title": "Cum.",
+                    "task_description": "Ut maxime voluptates ipsa.",
+                    "task_type": "shortAnswer",
+                    "feedback": "rem",
+                    "questionsOrImages": [
+                        {
+                            "id": 10,
+                            "question": "repellendus",
+                            "img": null
+                        },
+                        {
+                            "id": 11,
+                            "question": "omnis",
+                            "img": null
+                        },
+                        {
+                            "id": 12,
+                            "question": "quisquam",
+                            "img": null
+                        }
+                    ],
+                    "answers": [
+                        "quod",
+                        "reprehenderit",
+                        "possimus"
+                    ]
+                }
+            ]
+        }
+    ]
+}

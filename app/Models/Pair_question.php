@@ -10,8 +10,8 @@ class Pair_question extends Model
     /** @use HasFactory<\Database\Factories\PairQuestionFactory> */
     use HasFactory;
 
-
-    public function pair(){
-        return $this->belongsTo(Pair_groups::class,'pair_group_id');
+    public function pair()
+    {
+        return $this->belongsTo(Pair_groups::class, 'pair_group_id');
     }
 }

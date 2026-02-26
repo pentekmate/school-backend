@@ -22,7 +22,7 @@ class TaskFactory extends Factory
     public function definition()
     {
         return [
-            'task_type_id' => fake()->numberBetween(2, 2),
+            'task_type_id' => fake()->numberBetween(1, 4),
             'task_title' => fake()->sentence(1),
             'task_description' => fake()->sentence(3),
         ];
@@ -41,7 +41,7 @@ class TaskFactory extends Factory
                 case 2: // PAIR
                     Task_pair::factory()->for($task)->
                     withPairGroups()
-                    ->create();
+                        ->create();
                     break;
 
                 case 3: // SHORT ANSWER

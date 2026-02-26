@@ -19,7 +19,9 @@ class Pair_groups extends Model
     {
         return $this->hasMany(Pair_question::class, 'pair_group_id');
     }
-    public function answers(){
-        return $this->hasMany(Pair_answer::class,'pair_group_id');
+
+    public function answers()
+    {
+        return $this->hasMany(Pair_answer::class, 'pair_group_id');
     }
 }

@@ -17,7 +17,7 @@ class Pair_QuestionFactory extends Factory
     public function definition(): array
     {
         return [
-            "question"=>fake()->paragraph(1)
+            'question' => fake()->paragraph(1),
         ];
     }
 }

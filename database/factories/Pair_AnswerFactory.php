@@ -17,7 +17,7 @@ class Pair_AnswerFactory extends Factory
     public function definition(): array
     {
         return [
-            "answer"=>fake()->paragraph(1)
+            'answer' => fake()->paragraph(1),
         ];
     }
 }

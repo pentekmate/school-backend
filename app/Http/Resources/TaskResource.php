@@ -96,18 +96,23 @@ class TaskResource extends JsonResource
                 'task_type' => 'pairing',
                 'feedback' => $this->task_pair?->feedback,
 
-                'questionsOrImages' => $this->task_pair?->questions->map(function ($question) {
-                    return [
-                        'id' => $question->id,
-                        'question' => $question->question,
-                        'img' => $question->imgURL,
-                    ];
-                }),
-
-                'answers' => $this->task_shortAnswer?->questions
-                    ->map(fn ($q) => $q->answer?->answer)
-                    ->filter()
-                    ->values(),
+                'pairQuestions' => $this->task_pair?->pairGroups
+                    ->flatMap->questions
+                    ->map(function ($question) {
+                        return [
+                            'id' => $question->id,
+                            'question' => $question->question,
+                            'img' => $question->imgURL,
+                        ];
+                    }),
+                'pairAnswers' => $this->task_pair?->pairGroups->flatMap->answers
+                    ->map(function ($answer) {
+                        return [
+                            'id' => $answer->id,
+                            'answer' => $answer->answer,
+                            'img' => $answer->imgURL,
+                        ];
+                    }),
             ];
         }
 
