@@ -14,13 +14,13 @@ class TaskResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-     return match ($this->task_type->name) {
-        'short_answer' => $this->shortAnswerData(),
-        'grouping' => $this->groupingData(),
-        'assignment' => $this->assignmentData(),
-        'pairing' => $this->pairingData(),
-        default => [],
-    };
+        return match ($this->task_type->name) {
+            'short_answer' => $this->shortAnswerData(),
+            'grouping' => $this->groupingData(),
+            'assignment' => $this->assignmentData(),
+            'pairing' => $this->pairingData(),
+            default => [],
+        };
 
     }
 

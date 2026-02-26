@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreWorksheetRequest;
 use App\Http\Resources\WorksheetResource;
 use App\Models\Worksheet;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class WorkSheetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreWorksheetRequest $request)
     {
         DB::transaction(function () use ($request) {
 
