@@ -71,9 +71,10 @@ class StoreWorksheetRequest extends FormRequest
 
     private function validatePairing($validator, $task, $index)
     {
-        if($task['pairing']['pairing_groups']->count() >8){
+      if (count($task['pairing']['pairing_groups'] ?? []) > 8) {
             $validator->errors()->add(
-                "tasks.pairing.pairing_groups","Maximum 8 párt alkothatsz."
+                "tasks.$index.pairing.pairing_groups",
+                "Maximum 8 párt alkothatsz."
             );
             return;
         }
