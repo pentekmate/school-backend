@@ -23,6 +23,20 @@
               { "name": "Sas" },
               { "name": "Galamb" }
             ]
+          },
+          {
+             "name": "Halak",
+            "items": [
+              { "name": "Ponty" },
+              { "name": "Harcsa" }
+            ]
+          },
+          {
+            "name": "Hüllők",
+            "items": [
+              { "name": "Teknős" },
+              { "name": "Aligátor" }
+            ]
           }
         ]
       }

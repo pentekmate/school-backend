@@ -98,12 +98,26 @@ class StoreWorksheetRequest extends FormRequest
                 'A kérdés kötelező szöveg.'
             );
 
+            if (strlen($group['pair_question']) > 130) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
+                    'A kérdés nem lehet hosszabb, mint 130 karakter.'
+                );
+            }
+
             $this->validateStringField(
                 $validator,
                 $group['pair_answer'] ?? null,
                 "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
                 'A válasz kötelező szöveg.'
             );
+
+            if (strlen($group['pair_answer']) > 130) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
+                    'A válasz nem lehet hosszabb, mint 130 karakter.'
+                );
+            }
         }
     }
 
@@ -128,15 +142,14 @@ class StoreWorksheetRequest extends FormRequest
         }
 
         foreach ($task['grouping']['groups'] as $gIndex => $group) {
-               $this->validateStringField(
+            $this->validateStringField(
                 $validator,
                 $group['name'] ?? null,
                 "tasks.$index.grouping.groups.$gIndex.name",
-                "A név kötelező szöveg"
+                'A név kötelező szöveg'
             );
 
-
-            if (strlen($group['name']??null) > 30) {
+            if (strlen($group['name'] ?? null) > 30) {
                 $validator->errors()->add(
                     "tasks.$index.grouping.groups.$gIndex.name",
                     'A megadott csoportnév túlhosszú.'
@@ -156,19 +169,21 @@ class StoreWorksheetRequest extends FormRequest
                 );
             }
 
-            // if (empty($group['pair_question'])) {
-            //     $validator->errors()->add(
-            //         "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
-            //         'A kérdés megadása kötelező.'
-            //     );
-            // }
+            foreach ($group['items'] as $gItemIndex => $groupItem) {
+                $this->validateStringField(
+                    $validator,
+                    $groupItem['name'] ?? null,
+                    "tasks.$index.grouping.groups.{$group['name']}.$gItemIndex.name",
+                    'A csoport elemei kötelező szöveg.'
+                );
 
-            // if (empty($group['pair_answer'])) {
-            //     $validator->errors()->add(
-            //         "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
-            //         'A válasz megadása kötelező.'
-            //     );
-            // }
+                if (strlen($groupItem['name'] ?? null) > 30) {
+                    $validator->errors()->add(
+                        "tasks.$index.grouping.groups.{$group['name']}.$gItemIndex.name",
+                        'A csoport elem nem lehet hosszabb 30 karakternél.'
+                    );
+                }
+            }
         }
     }
 
