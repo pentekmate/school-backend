@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreWorksheetRequest extends FormRequest
 {
@@ -39,6 +41,7 @@ class StoreWorksheetRequest extends FormRequest
             'tasks.*.task_description' => 'nullable|string',
             'tasks.*.task_type_id' => 'required|integer|exists:task_types,id',
             'tasks.*.feedback' => 'nullable|string',
+
         ];
     }
 
@@ -55,12 +58,70 @@ class StoreWorksheetRequest extends FormRequest
         ];
     }
 
-    // protected function failedValidation(Validator $validator)
-    // {
-    //     throw new HttpResponseException(response()->json([
-    //         'success' => false,
-    //         'message' => 'Validációs hiba történt.',
-    //         'errors' => $validator->errors(),
-    //     ], 422));
-    // }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+
+            foreach ($this->tasks ?? [] as $index => $task) {
+                $this->validateTaskByType($validator, $task, $index);
+            }
+
+        });
+    }
+
+    private function validatePairing($validator, $task, $index)
+    {
+        if($task['pairing']['pairing_groups']->count() >8){
+            $validator->errors()->add(
+                "tasks.pairing.pairing_groups","Maximum 8 párt alkothatsz."
+            );
+            return;
+        }
+
+        if (empty($task['pairing']['pairing_groups'])) {
+            $validator->errors()->add(
+                "tasks.$index.pairing.pairing_groups",
+                'Legalább egy pár megadása kötelező.'
+            );
+
+            return;
+        }
+
+        foreach ($task['pairing']['pairing_groups'] as $gIndex => $group) {
+
+            if (empty($group['pair_question'])) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
+                    'A kérdés megadása kötelező.'
+                );
+            }
+
+            if (empty($group['pair_answer'])) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
+                    'A válasz megadása kötelező.'
+                );
+            }
+        }
+    }
+
+    private function validateTaskByType($validator, $task, $index)
+    {
+        return match ($task['task_type_id']) {
+            // 1 => $this->validateGrouping($validator, $task, $index),
+            2 => $this->validatePairing($validator, $task, $index),
+            // 3 => $this->validateShortAnswer($validator, $task, $index),
+            // 4 => $this->validateAssignment($validator, $task, $index),
+            default => null,
+        };
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'message' => 'Validációs hiba történt.',
+            'errors' => $validator->errors(),
+        ], 422));
+    }
 }

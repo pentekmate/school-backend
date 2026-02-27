@@ -1,0 +1,21 @@
+{
+    "success": false,
+    "message": "Validációs hiba történt.",
+    "errors": {
+        "subject_id": [
+            "The subject id field is required."
+        ],
+        "lifetime_minutes": [
+            "The lifetime minutes field is required."
+        ],
+        "max_time_to_resolve_minutes": [
+            "The max time to resolve minutes field is required."
+        ],
+        "grade": [
+            "The grade field is required."
+        ],
+        "is_public": [
+            "The is public field is required."
+        ]
+    }
+}
