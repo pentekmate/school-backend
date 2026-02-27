@@ -4,7 +4,9 @@ Cloneozd a github repot.
 
 # Clone után másold át az .env.examplet a .envbe
 
-```bash cp .env.example .env ```
+```bash
+ cp .env.example .env 
+```
 
 # Ezután módpsítsd a .env fájlt
 
