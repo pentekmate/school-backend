@@ -187,13 +187,130 @@ class StoreWorksheetRequest extends FormRequest
         }
     }
 
+    private function validateShortAnswer($validator, $task, $index)
+    {
+        if (count($task['short_answer']['questions'] ?? []) > 18) {
+            $validator->errors()->add(
+                "tasks.$index.short_answer.questions",
+                'Maximum 18 kérdést alkothatsz.'
+            );
+
+            return;
+        }
+
+        if (empty($task['short_answer']['questions'])) {
+            $validator->errors()->add(
+                "tasks.$index.short_answer.questions",
+                'Legalább egy kérdés megadása kötelező.'
+            );
+
+            return;
+        }
+
+        foreach ($task['short_answer']['questions'] as $gIndex => $shortAnswer) {
+
+            $this->validateStringField(
+                $validator,
+                $shortAnswer['question'] ?? null,
+                "tasks.$index.short_answer.questions.$gIndex.question",
+                'A kérdés kötelező szöveg.'
+            );
+
+            if (strlen($shortAnswer['question']) > 150) {
+                $validator->errors()->add(
+                    "tasks.$index.short_answer.questions.$gIndex.question",
+                    'A kérdés nem lehet hosszabb, mint 150 karakter.'
+                );
+            }
+
+            $this->validateStringField(
+                $validator,
+                $shortAnswer['answer'] ?? null,
+                "tasks.$index.short_answer.questions.$gIndex.answer",
+                'A válasz kötelező szöveg.'
+            );
+
+            if (strlen($shortAnswer['answer']) > 50) {
+                $validator->errors()->add(
+                    "tasks.$index.short_answer.questions.$gIndex.answer",
+                    'A válasz nem lehet hosszabb, mint 50 karakter.'
+                );
+            }
+        }
+    }
+
+    private function validateAssignment($validator, $task, $index)
+    {
+        $this->validateStringField(
+            $validator,
+            $task['assignment']['imgURL'] ?? null,
+            "tasks.$index.assignment.imageURL",
+            'A kép megadása kötelező.'
+        );
+        if (empty($task['assignment']['coordinatesAndAnswers'])) {
+            $validator->errors()->add(
+                "tasks.$index.assignment.coordinatesAndAnswers",
+                'Legalább 1 kordináta megadása kötelező.'
+            );
+        }
+
+        if (count($task['assignment']['coordinatesAndAnswers']) > 10) {
+            $validator->errors()->add(
+                "tasks.$index.assignment.coordinatesAndAnswers",
+                'Maximum 10 kordinátát adhatsz meg.'
+            );
+        }
+
+        foreach ($task['assignment']['coordinatesAndAnswers'] as $cIndex => $coordinate) {
+           
+            $this->validateStringField(
+                $validator,
+                $coordinate['coordinate'] ?? null,
+                "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.coordinate",
+                'A kordináta megadása kötelező.'
+            );
+            if (count($coordinate['answers']) > 2) {
+                $validator->errors()->add(
+                    "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.answers",
+                    '1 kordiánához maximum 2 válasz adható meg.'
+                );
+            }
+            $answers = $coordinate['answers'] ?? [];
+            $correctCount = collect($answers)
+                ->where('isCorrect', true)
+                ->count();
+
+            if ($correctCount < 1) {
+                $validator->errors()->add(
+                    "tasks.$index.coordinatesAndAnswers.$cIndex.answers",
+                    'Legalább 1 helyes választ meg kell adni.'
+                );
+            }
+
+            if ($correctCount > 1) {
+                $validator->errors()->add(
+                    "tasks.$index.coordinatesAndAnswers.$cIndex.answers",
+                    'Maximum 1 helyes válasz adható meg.'
+                );
+            }
+            foreach ($coordinate['answers'] as $aIndex => $answer) {
+                $this->validateStringField(
+                    $validator,
+                    $answer['answer'] ?? null,
+                    "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.coordinate.answers$aIndex.answer",
+                    'A válasz megadása kötelező.'
+                );
+            }
+        }
+    }
+
     private function validateTaskByType($validator, $task, $index)
     {
         return match ($task['task_type_id']) {
             1 => $this->validateGrouping($validator, $task, $index),
             2 => $this->validatePairing($validator, $task, $index),
-            // 3 => $this->validateShortAnswer($validator, $task, $index),
-            // 4 => $this->validateAssignment($validator, $task, $index),
+            3 => $this->validateShortAnswer($validator, $task, $index),
+            4 => $this->validateAssignment($validator, $task, $index),
             default => null,
         };
     }

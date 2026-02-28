@@ -128,7 +128,7 @@ class WorkSheetController extends Controller
 
                         foreach ($item['answers'] as $coordinateAnswerItem) {
 
-                            $assigmentCoordinate->assignmentAnswer()->create([
+                            $assigmentCoordinate->assignmentAnswers()->create([
                                 'answer' => $coordinateAnswerItem['answer'],
                                 'isCorrect' => $coordinateAnswerItem['isCorrect'],
                             ]);
