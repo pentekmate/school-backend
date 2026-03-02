@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreWorksheetRequest;
 use App\Http\Resources\WorksheetResource;
 use App\Models\Worksheet;
+use App\Services\Tasks\StoreGroupingTaskService;
+use App\Services\Tasks\StorePairingTaskService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -29,9 +31,9 @@ class WorkSheetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreWorksheetRequest $request)
+    public function store(StoreWorksheetRequest $request, StoreGroupingTaskService $groupingService, StorePairingTaskService $pairingService)
     {
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request, $groupingService, $pairingService) {
 
             $worksheet = Worksheet::create([
                 'title' => $request->title,
@@ -54,43 +56,11 @@ class WorkSheetController extends Controller
                 ]);
 
                 if ($taskData['task_type_id'] == 1) {
-
-                    $grouping = $task->task_grouping()->create([
-                        'feedback' => $taskData['feedback'],
-                    ]);
-
-                    foreach ($taskData['grouping']['groups'] as $groupData) {
-
-                        $group = $grouping->groups()->create([
-                            'name' => $groupData['name'],
-                        ]);
-
-                        foreach ($groupData['items'] as $itemData) {
-                            $group->items()->create([
-                                'name' => $itemData['name'],
-                            ]);
-                        }
-                    }
+                    $groupingService->store($task, $taskData);
                 }
 
                 if ($taskData['task_type_id'] == 2) {
-
-                    $pairing = $task->task_pair()->create([
-                        'feedback' => $taskData['feedback'],
-                    ]);
-
-                    foreach ($taskData['pairing']['pairing_groups'] as $groupData) {
-
-                        $pairGroup = $pairing->pairGroups()->create();
-
-                        $pairGroup->questions()->create([
-                            'question' => $groupData['pair_question'],
-                        ]);
-
-                        $pairGroup->answers()->create([
-                            'answer' => $groupData['pair_answer'],
-                        ]);
-                    }
+                    $pairingService->store($task, $taskData);
                 }
 
                 if ($taskData['task_type_id'] == 3) {

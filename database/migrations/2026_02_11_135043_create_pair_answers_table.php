@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('pair_group_id');
-            $table->string('answer');
+            $table->string('answer')->nullable();
             $table->string('imgURL')->nullable();
         });
     }

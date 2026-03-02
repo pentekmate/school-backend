@@ -10,7 +10,7 @@ class GroupItem extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'imgUrl'];
 
     public function group()
     {

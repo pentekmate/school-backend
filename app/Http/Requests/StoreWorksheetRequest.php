@@ -91,7 +91,54 @@ class StoreWorksheetRequest extends FormRequest
 
         foreach ($task['pairing']['pairing_groups'] as $gIndex => $group) {
 
-            $this->validateStringField(
+            $pairQuestion = $group['pair_question'] ?? null;
+            $pairQuestionImage = $group['pair_question_image'] ?? null;
+
+            $hasPairQuestion = ! empty($pairQuestion);
+            $hasPairQuestionImage = ! empty($pairQuestionImage) && (is_string($pairQuestionImage) || $pairQuestionImage instanceof \Illuminate\Http\UploadedFile);
+
+            $pairAnswer = $group['pair_answer'] ?? null;
+            $pairAnswerImage = $group['pair_answer_image'] ?? null;
+
+            $hasPairAnswer = ! empty($pairAnswer);
+            $hasPairAnswerImage = ! empty($pairAnswerImage) && (is_string($pairAnswerImage) || $pairAnswerImage instanceof \Illuminate\Http\UploadedFile);
+
+            if (! $hasPairQuestion && ! $hasPairQuestionImage) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'A párosításhoz meg kell adni vagy egy kérdés szöveget, vagy egy képet.'
+                );
+            }
+
+            if ($hasPairQuestion && $hasPairQuestionImage) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'Nem adhatsz meg egyszerre kérdés szöveget és képet.'
+                );
+            }
+
+            if (! $hasPairAnswer && ! $hasPairAnswerImage) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'A párosításhoz meg kell adni vagy egy válasz szöveget, vagy egy képet.'
+                );
+            }
+
+            if ($hasPairAnswer && $hasPairAnswerImage) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'Nem adhatsz meg egyszerre válasz szöveget és képet.'
+                );
+            }
+
+            if (($hasPairQuestion || $hasPairQuestionImage) && (! $hasPairAnswerImage && ! $hasPairAnswer)) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'Ha van kérdés, kötelező választ is megadni.'
+                );
+            }
+            if($hasPairQuestion){
+                $this->validateStringField(
                 $validator,
                 $group['pair_question'] ?? null,
                 "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
@@ -104,8 +151,9 @@ class StoreWorksheetRequest extends FormRequest
                     'A kérdés nem lehet hosszabb, mint 130 karakter.'
                 );
             }
-
-            $this->validateStringField(
+            }
+            if($hasPairAnswer){
+                 $this->validateStringField(
                 $validator,
                 $group['pair_answer'] ?? null,
                 "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
@@ -118,6 +166,19 @@ class StoreWorksheetRequest extends FormRequest
                     'A válasz nem lehet hosszabb, mint 130 karakter.'
                 );
             }
+            }
+
+            if($hasPairQuestionImage){
+                 
+                $this->validateIMG(
+                $validator,
+                $pairQuestionImage, 
+                "tasks.$index.pairing.pairing_groups.$gIndex.pair_question_image");
+                
+            }
+            
+
+           
         }
     }
 
@@ -170,18 +231,49 @@ class StoreWorksheetRequest extends FormRequest
             }
 
             foreach ($group['items'] as $gItemIndex => $groupItem) {
-                $this->validateStringField(
-                    $validator,
-                    $groupItem['name'] ?? null,
-                    "tasks.$index.grouping.groups.{$group['name']}.$gItemIndex.name",
-                    'A csoport elemei kötelező szöveg.'
-                );
 
-                if (strlen($groupItem['name'] ?? null) > 30) {
+                $name = $groupItem['name'] ?? null;
+                $image = $groupItem['image'] ?? null;
+
+                $hasName = ! empty($name);
+                $hasImage = ! empty($image) && (is_string($image) || $image instanceof \Illuminate\Http\UploadedFile);
+
+                if (! $hasName && ! $hasImage) {
                     $validator->errors()->add(
-                        "tasks.$index.grouping.groups.{$group['name']}.$gItemIndex.name",
-                        'A csoport elem nem lehet hosszabb 30 karakternél.'
+                        "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex",
+                        'A csoport elemhez vagy nevet vagy képet kell megadni.'
                     );
+
+                    continue;
+                }
+
+                if ($hasName && $hasImage) {
+                    $validator->errors()->add(
+                        "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex",
+                        'Egy csoport elemhez nem adhatsz meg egyszerre nevet és képet.'
+                    );
+
+                    continue;
+                }
+
+                if ($hasName) {
+                    $this->validateStringField(
+                        $validator,
+                        $name,
+                        "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex.name",
+                        'A csoport elem neve kötelező szöveg.'
+                    );
+
+                    if (strlen($name) > 30) {
+                        $validator->errors()->add(
+                            "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex.name",
+                            'A csoport elem nem lehet hosszabb 30 karakternél.'
+                        );
+                    }
+                }
+
+                if ($hasImage) {
+                    $this->validateIMG($validator, $image, "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex.image");
                 }
             }
         }
@@ -262,7 +354,7 @@ class StoreWorksheetRequest extends FormRequest
         }
 
         foreach ($task['assignment']['coordinatesAndAnswers'] as $cIndex => $coordinate) {
-           
+
             $this->validateStringField(
                 $validator,
                 $coordinate['coordinate'] ?? null,
@@ -329,5 +421,70 @@ class StoreWorksheetRequest extends FormRequest
         if (! is_string($value) || trim($value) === '') {
             $validator->errors()->add($path, $message);
         }
+    }
+
+    private function validateIMG($validator, $image, $path)
+    {
+
+        if ($image instanceof \Illuminate\Http\UploadedFile) {
+            // Fájl validáció
+            if (! $image->isValid()) {
+                $validator->errors()->add(
+                    $path,
+                    'A feltöltött kép érvénytelen.'
+                );
+            }
+
+            if (! in_array($image->getMimeType(), ['image/jpeg', 'image/png', 'image/webp'])) {
+                $validator->errors()->add(
+                    $path,
+                    'Csak JPG, PNG vagy WEBP formátum engedélyezett.'
+                );
+            }
+
+            if ($image->getSize() > 5 * 1024 * 1024) {
+                $validator->errors()->add(
+                    $path,
+                    'A kép maximum 5MB lehet.'
+                );
+            }
+
+        } elseif (is_string($image) && str_starts_with($image, 'data:image')) {
+            // Base64 validáció
+            $decoded = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image));
+
+            if ($decoded === false) {
+                $validator->errors()->add(
+                    $path,
+                    'A Base64 kép érvénytelen.'
+                );
+            }
+
+            // Kép méret ellenőrzés
+            if (strlen($decoded) > 5 * 1024 * 1024) {
+                $validator->errors()->add(
+                    $path,
+                    'A kép maximum 5MB lehet.'
+                );
+            }
+
+            // MIME típus ellenőrzés Base64 esetén
+            preg_match('/^data:image\/(\w+);base64,/', $image, $matches);
+            $mimeType = $matches[1] ?? null;
+            if (! in_array($mimeType, ['jpeg', 'jpg', 'png', 'webp'])) {
+                $validator->errors()->add(
+                    $path,
+                    'Csak JPG, PNG vagy WEBP formátum engedélyezett.'
+                );
+            }
+
+        } else {
+            // Nem támogatott típus
+            $validator->errors()->add(
+                $path,
+                'A kép típusa nem támogatott.'
+            );
+        }
+
     }
 }
