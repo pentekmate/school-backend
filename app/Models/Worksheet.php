@@ -26,4 +26,9 @@ class Worksheet extends Model
     {
         return $this->belongsTo(Subject::class, 'subject_id');
     }
+
+    public function solutions()
+    {
+        return $this->hasMany(Worksheet_soultion::class,'worksheet_id');
+    }
 }

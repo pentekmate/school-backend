@@ -31,6 +31,7 @@ class TaskResource extends JsonResource
             'task_description' => $this->task_description,
             'task_type' => 'shortAnswer',
             'feedback' => $this->task_shortAnswer?->feedback,
+            'task_id'=>$this->id,
 
             'questionsOrImages' => $this->task_shortAnswer?->questions->map(function ($question) {
                 return [
@@ -40,10 +41,12 @@ class TaskResource extends JsonResource
                 ];
             }),
 
-            'answers' => $this->task_shortAnswer?->questions
-                ->map(fn ($q) => $q->answer?->answer)
-                ->filter()
-                ->values(),
+            // 'answers'=>$this ->task_shortAnswer ->questions->map(function($question){
+            //     return [
+            //         'id'=>$question->answer->id,
+            //         'answer'=>$question->answer->answer
+            //     ];
+            // })
         ];
     }
 
@@ -54,6 +57,7 @@ class TaskResource extends JsonResource
             'task_description' => $this->task_description,
             'task_type' => 'grouping',
             'feedback' => $this->task_grouping?->feedback,
+            'task_id'=>$this->id,
 
             'groups' => $this->task_grouping?->groups
                 ->map(function ($group) {
@@ -85,6 +89,7 @@ class TaskResource extends JsonResource
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
             'task_type' => 'assignment',
+            'task_id'=>$this->id,
 
             'img' => $image?->imageURL, // vagy ami az oszlop neve
 
@@ -115,6 +120,7 @@ class TaskResource extends JsonResource
             'task_description' => $this->task_description,
             'task_type' => 'pairing',
             'feedback' => $this->task_pair?->feedback,
+            'task_id'=>$this->id,
 
             'pairQuestions' => $this->task_pair?->pairGroups
                 ->flatMap->questions
