@@ -19,23 +19,39 @@ class StoreShortAnswerService
         ]);
 
         foreach ($taskData['short_answer']['questions'] as $questionItem) {
-            if (! empty($groupData['pair_question_image'])) {
 
-                if ($groupData['pair_question_image'] instanceof UploadedFile) {
+            $imagePathForQuestion = null;
+            $imagePathForAnswer = null;
+            if (! empty($questionItem['question_image'])) {
 
-                    $imagePathforQuestion = $this->imageUploadService->store($groupData['pair_question_image']);
-                } elseif (is_string($groupData['pair_question_image']) && str_starts_with($groupData['pair_question_image'], 'data:image')) {
+                if ($questionItem['question_image'] instanceof UploadedFile) {
 
-                    $imagePathforQuestion = $this->imageUploadService->storeBase64($groupData['pair_question_image']);
+                    $imagePathForQuestion = $this->imageUploadService->store($questionItem['question_image']);
+                } elseif (is_string($questionItem['question_image']) && str_starts_with($questionItem['question_image'], 'data:image')) {
+
+                    $imagePathForQuestion = $this->imageUploadService->storeBase64($questionItem['question_image']);
+                }
+            }
+
+            if (! empty($questionItem['answer_image'])) {
+
+                if ($questionItem['answer_image'] instanceof UploadedFile) {
+
+                    $imagePathForAnswer = $this->imageUploadService->store($questionItem['answer_image']);
+                } elseif (is_string($questionItem['answer_image']) && str_starts_with($questionItem['answer_image'], 'data:image')) {
+
+                    $imagePathForAnswer = $this->imageUploadService->storeBase64($questionItem['answer_image']);
                 }
             }
 
             $sortAnwerQuestion = $short_answer->questions()->create([
-                'question' => $questionItem['question'],
+                'question' => $questionItem['question'] ?? null,
+                'imgURL' => $imagePathForQuestion,
             ]);
 
             $sortAnwerQuestion->answer()->create([
-                'answer' => $questionItem['answer'],
+                'answer' => $questionItem['answer'] ?? null,
+                'imgURL' => $imagePathForAnswer,
             ]);
         }
     }

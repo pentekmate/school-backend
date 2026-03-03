@@ -17,7 +17,7 @@ class TaskResource extends JsonResource
         return match ($this->task_type->name) {
             'short_answer' => $this->shortAnswerData(),
             'grouping' => $this->groupingData(),
-            'assignment' => $this->assignmentData(),
+            'assignment' => $this->assigmentData(),
             'pairing' => $this->pairingData(),
             default => [],
         };
@@ -69,6 +69,7 @@ class TaskResource extends JsonResource
                         return [
                             'id' => $item->id,
                             'name' => $item->name,
+                            'imgURL'=>$item->imgUrl
 
                         ];
                     });

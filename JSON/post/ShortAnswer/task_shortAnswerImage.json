@@ -1,0 +1,28 @@
+{
+  "title": "Rövidválaszos feladatlap",
+  "user_id": 1,
+  "classroom_id": 1,
+  "subject_id":1,
+  "lifetime_minutes":60,
+  "max_time_to_resolve_minutes":45,
+  "grade":1,
+  "is_public":0,
+  "tasks": [
+    {
+      "task_title": "Állatos kérdések",
+      "task_description": "Válaszolj röviden a kérdésekre",
+      "task_type_id": 3,
+      "feedback": "Szép munka!",
+      "short_answer": {
+        "questions": [
+          {
+            "question_image": "Base64:IMG",
+            "question":null,
+            "answer": null,
+            "answer_image":"Base64:IMG"
+          }
+        ]
+      }
+    }
+  ]
+}

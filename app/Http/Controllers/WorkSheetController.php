@@ -7,6 +7,8 @@ use App\Http\Resources\WorksheetResource;
 use App\Models\Worksheet;
 use App\Services\Tasks\StoreGroupingTaskService;
 use App\Services\Tasks\StorePairingTaskService;
+use App\Services\Tasks\StoreShortAnswerService;
+use App\Services\Tasks\StoreAssignmentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -31,9 +33,14 @@ class WorkSheetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreWorksheetRequest $request, StoreGroupingTaskService $groupingService, StorePairingTaskService $pairingService)
+    public function store(
+        StoreWorksheetRequest $request,
+        StoreGroupingTaskService $groupingService,
+        StorePairingTaskService $pairingService,
+        StoreShortAnswerService $shortAnswerService,
+        StoreAssignmentService $assignmentService)
     {
-        DB::transaction(function () use ($request, $groupingService, $pairingService) {
+        DB::transaction(function () use ($request, $groupingService, $pairingService, $shortAnswerService,$assignmentService) {
 
             $worksheet = Worksheet::create([
                 'title' => $request->title,
@@ -64,32 +71,10 @@ class WorkSheetController extends Controller
                 }
 
                 if ($taskData['task_type_id'] == 3) {
-
+                    $shortAnswerService->store($task, $taskData);
                 }
                 if ($taskData['task_type_id'] == 4) {
-
-                    $assignmentTask = $task->task_assignment()->create([
-                        'feedback' => $taskData['feedback'],
-                    ]);
-
-                    $assignmentImage = $assignmentTask->image()->create([
-                        'imageURL' => $taskData['assignment']['imgURL'],
-                    ]);
-
-                    foreach ($taskData['assignment']['coordinatesAndAnswers'] as $item) {
-
-                        $assigmentCoordinate = $assignmentImage->assignmentCoordinates()->create([
-                            'coordinate' => $item['coordinate'],
-                        ]);
-
-                        foreach ($item['answers'] as $coordinateAnswerItem) {
-
-                            $assigmentCoordinate->assignmentAnswers()->create([
-                                'answer' => $coordinateAnswerItem['answer'],
-                                'isCorrect' => $coordinateAnswerItem['isCorrect'],
-                            ]);
-                        }
-                    }
+                    $assignmentService->store($task,$taskData);
                 }
             }
         });

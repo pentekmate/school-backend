@@ -177,6 +177,15 @@ class StoreWorksheetRequest extends FormRequest
 
             }
 
+            if ($hasPairAnswerImage) {
+
+                $this->validateIMG(
+                    $validator,
+                    $pairAnswerImage,
+                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer_image");
+
+            }
+
         }
     }
 
@@ -298,32 +307,97 @@ class StoreWorksheetRequest extends FormRequest
         }
 
         foreach ($task['short_answer']['questions'] as $gIndex => $shortAnswer) {
+            $shortAnswerQuestion = $shortAnswer['question'] ?? null;
+            $shortAnswerQuestionImage = $shortAnswer['question_image'] ?? null;
 
-            $this->validateStringField(
-                $validator,
-                $shortAnswer['question'] ?? null,
-                "tasks.$index.short_answer.questions.$gIndex.question",
-                'A kérdés kötelező szöveg.'
-            );
+            $hasQuestion = ! empty($shortAnswerQuestion);
+            $hasQuestionImage = ! empty($shortAnswerQuestionImage) && (is_string($shortAnswerQuestionImage) || $shortAnswerQuestionImage instanceof \Illuminate\Http\UploadedFile);
 
-            if (strlen($shortAnswer['question']) > 150) {
+            $shortAnswerAnswer = $shortAnswer['answer'] ?? null;
+            $shortAnswerImage = $shortAnswer['answer_image'] ?? null;
+
+            $hasAnswer = ! empty($shortAnswerAnswer);
+            $hasAnswerImage = ! empty($shortAnswerImage) && (is_string($shortAnswerImage) || $shortAnswerImage instanceof \Illuminate\Http\UploadedFile);
+
+            if (! $hasQuestion && ! $hasQuestionImage) {
                 $validator->errors()->add(
-                    "tasks.$index.short_answer.questions.$gIndex.question",
-                    'A kérdés nem lehet hosszabb, mint 150 karakter.'
+                    "tasks.$index.short_answer.questions.$gIndex",
+                    'A kérdéshez meg kell adni vagy egy kérdés szöveget, vagy egy képet.'
                 );
             }
 
-            $this->validateStringField(
-                $validator,
-                $shortAnswer['answer'] ?? null,
-                "tasks.$index.short_answer.questions.$gIndex.answer",
-                'A válasz kötelező szöveg.'
-            );
-
-            if (strlen($shortAnswer['answer']) > 50) {
+            if ($hasQuestion && $hasQuestionImage) {
                 $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'Nem adhatsz meg egyszerre kérdés szöveget és képet.'
+                );
+            }
+
+            if (! $hasAnswer && ! $hasAnswerImage) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'A válaszhoz meg kell adni vagy egy válasz szöveget, vagy egy képet.'
+                );
+            }
+
+            if ($hasAnswer && $hasAnswerImage) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'Nem adhatsz meg egyszerre válasz szöveget és képet.'
+                );
+            }
+
+            if (($hasQuestion || $hasQuestionImage) && (! $hasAnswer && ! $hasAnswerImage)) {
+                $validator->errors()->add(
+                    "tasks.$index.pairing.pairing_groups.$gIndex",
+                    'Ha van kérdés, kötelező választ is megadni.'
+                );
+            }
+
+            if ($hasQuestion) {
+                $this->validateStringField(
+                    $validator,
+                    $shortAnswer['question'] ?? null,
+                    "tasks.$index.short_answer.questions.$gIndex.question",
+                    'A kérdés kötelező szöveg.'
+                );
+
+                if (strlen($shortAnswer['question']) > 150) {
+                    $validator->errors()->add(
+                        "tasks.$index.short_answer.questions.$gIndex.question",
+                        'A kérdés nem lehet hosszabb, mint 150 karakter.'
+                    );
+                }
+            }
+            if ($hasAnswer) {
+                $this->validateStringField(
+                    $validator,
+                    $shortAnswer['answer'] ?? null,
                     "tasks.$index.short_answer.questions.$gIndex.answer",
-                    'A válasz nem lehet hosszabb, mint 50 karakter.'
+                    'A válasz kötelező szöveg.'
+                );
+
+                if (strlen($shortAnswer['answer']) > 50) {
+                    $validator->errors()->add(
+                        "tasks.$index.short_answer.questions.$gIndex.answer",
+                        'A válasz nem lehet hosszabb, mint 50 karakter.'
+                    );
+                }
+            }
+
+            if ($hasQuestionImage) {
+                $this->validateIMG(
+                    $validator,
+                    $shortAnswerQuestionImage,
+                    "tasks.short_answer.questions.$gIndex.question_image"
+                );
+            }
+
+            if ($hasAnswerImage) {
+                $this->validateIMG(
+                    $validator,
+                    $shortAnswerImage,
+                    "tasks.short_answer.questions.$gIndex.answer_image"
                 );
             }
         }
@@ -331,12 +405,23 @@ class StoreWorksheetRequest extends FormRequest
 
     private function validateAssignment($validator, $task, $index)
     {
-        $this->validateStringField(
-            $validator,
-            $task['assignment']['imgURL'] ?? null,
-            "tasks.$index.assignment.imageURL",
-            'A kép megadása kötelező.'
-        );
+        $assignmentImage = $task['assignment']['image'] ?? null;
+
+        if(!$assignmentImage){
+            $validator->errors()->add(
+                "tasks.$index.assignment.image",
+                "Kötelező képet megadni."
+            );
+        }
+
+        if($assignmentImage){
+            $this->validateIMG(
+                $validator,
+                $assignmentImage,
+                "tasks.$index.assignment.image"
+            );
+        }
+ 
         if (empty($task['assignment']['coordinatesAndAnswers'])) {
             $validator->errors()->add(
                 "tasks.$index.assignment.coordinatesAndAnswers",

@@ -14,7 +14,7 @@
             "feedback": "ezazzzz",
             "task_type_id": 4,
             "assignment": {
-                "imgURL": "https://picsum.photos/640/480?random=6",
+                "image": "https://picsum.photos/640/480?random=6",
                 "coordinatesAndAnswers": [
                     {
                         "coordinate": "225,333",
