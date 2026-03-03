@@ -65,20 +65,6 @@ class WorkSheetController extends Controller
 
                 if ($taskData['task_type_id'] == 3) {
 
-                    $short_answer = $task->task_shortAnswer()->create([
-                        'feedback' => $taskData['feedback'],
-                    ]);
-
-                    foreach ($taskData['short_answer']['questions'] as $questionItem) {
-
-                        $sortAnwerQuestion = $short_answer->questions()->create([
-                            'question' => $questionItem['question'],
-                        ]);
-
-                        $sortAnwerQuestion->answer()->create([
-                            'answer' => $questionItem['answer'],
-                        ]);
-                    }
                 }
                 if ($taskData['task_type_id'] == 4) {
 

@@ -46,7 +46,7 @@ class StorePairingTaskService
             }
 
             $pairGroup->questions()->create([
-                'question' => $groupData['pair_question']?? null,
+                'question' => $groupData['pair_question'] ?? null,
                 'imgURL' => $imagePathforQuestion,
             ]);
 

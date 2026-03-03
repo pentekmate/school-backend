@@ -137,48 +137,46 @@ class StoreWorksheetRequest extends FormRequest
                     'Ha van kérdés, kötelező választ is megadni.'
                 );
             }
-            if($hasPairQuestion){
+            if ($hasPairQuestion) {
                 $this->validateStringField(
-                $validator,
-                $group['pair_question'] ?? null,
-                "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
-                'A kérdés kötelező szöveg.'
-            );
-
-            if (strlen($group['pair_question']) > 130) {
-                $validator->errors()->add(
+                    $validator,
+                    $group['pair_question'] ?? null,
                     "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
-                    'A kérdés nem lehet hosszabb, mint 130 karakter.'
+                    'A kérdés kötelező szöveg.'
                 );
-            }
-            }
-            if($hasPairAnswer){
-                 $this->validateStringField(
-                $validator,
-                $group['pair_answer'] ?? null,
-                "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
-                'A válasz kötelező szöveg.'
-            );
 
-            if (strlen($group['pair_answer']) > 130) {
-                $validator->errors()->add(
+                if (strlen($group['pair_question']) > 130) {
+                    $validator->errors()->add(
+                        "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
+                        'A kérdés nem lehet hosszabb, mint 130 karakter.'
+                    );
+                }
+            }
+            if ($hasPairAnswer) {
+                $this->validateStringField(
+                    $validator,
+                    $group['pair_answer'] ?? null,
                     "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
-                    'A válasz nem lehet hosszabb, mint 130 karakter.'
+                    'A válasz kötelező szöveg.'
                 );
-            }
+
+                if (strlen($group['pair_answer']) > 130) {
+                    $validator->errors()->add(
+                        "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
+                        'A válasz nem lehet hosszabb, mint 130 karakter.'
+                    );
+                }
             }
 
-            if($hasPairQuestionImage){
-                 
+            if ($hasPairQuestionImage) {
+
                 $this->validateIMG(
-                $validator,
-                $pairQuestionImage, 
-                "tasks.$index.pairing.pairing_groups.$gIndex.pair_question_image");
-                
-            }
-            
+                    $validator,
+                    $pairQuestionImage,
+                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_question_image");
 
-           
+            }
+
         }
     }
 
