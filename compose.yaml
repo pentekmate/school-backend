@@ -1,6 +1,5 @@
 services:
-    schoolBackend:
-        container_name: school-backend 
+    school-backend:
         build:
             context: './vendor/laravel/sail/runtimes/8.5'
             dockerfile: Dockerfile
@@ -19,9 +18,7 @@ services:
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
-            - '.:/var/www/html:cached'       # kód, csak olvasás-gyorsítással
-            - sail-storage:/var/www/html/storage
-            - sail-cache:/var/www/html/bootstrap/cache
+            - '.:/var/www/html'
         networks:
             - sail
         depends_on:
@@ -55,7 +52,7 @@ services:
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
-        container_name: school-backend-phpmyadmin
+        container_name: laravel_phpmyadmin
         restart: always
         ports:
             - "8081:80"
@@ -73,9 +70,5 @@ networks:
         driver: bridge
 
 volumes:
-  sail-mysql:
-    driver: local
-  sail-storage:
-    driver: local
-  sail-cache:
-    driver: local
+    sail-mysql:
+        driver: local

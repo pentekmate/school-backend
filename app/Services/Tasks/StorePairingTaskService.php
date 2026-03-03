@@ -46,12 +46,12 @@ class StorePairingTaskService
             }
 
             $pairGroup->questions()->create([
-                'question' => $groupData['pair_question'],
+                'question' => $groupData['pair_question']?? null,
                 'imgURL' => $imagePathforQuestion,
             ]);
 
             $pairGroup->answers()->create([
-                'answer' => $groupData['pair_answer'],
+                'answer' => $groupData['pair_answer'] ?? null,
                 'imgURL' => $imagePathforAnswer,
             ]);
         }
