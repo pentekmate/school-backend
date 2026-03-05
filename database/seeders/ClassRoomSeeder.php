@@ -14,7 +14,7 @@ class ClassRoomSeeder extends Seeder
     {
         Classroom::insert(
             [
-                ['id' => 1, 'user_id' => 1, 'name' => 'matek'],
+                ['id' => 1, 'user_id' => 1, 'name' => '4.c'],
 
             ]);
     }

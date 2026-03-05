@@ -21,4 +21,9 @@ class Task_shortAnswer_question extends Model
     {
         return $this->hasOne(Task_shortAnswer_answer::class, 'task_short_answer_question_id');
     }
+
+    public function userAnswer()
+    {
+        return $this->hasMany(ShortAnswer_user_answer::class, 'task_short_answer_question_id');
+    }
 }

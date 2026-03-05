@@ -110,6 +110,20 @@ return new class extends Migration
             $table->foreign('task_assignment_coordinate_id')->references('id')->on('task_assignment_coordinates')->cascadeOnDelete();
         });
 
+        Schema::table('worksheet_solutions', function (Blueprint $table) {
+            $table
+                ->foreign('worksheet_id')
+                ->references('id')
+                ->on('worksheets')
+                ->cascadeOnDelete();
+
+            $table
+                ->foreign('student_id')
+                ->references('id')
+                ->on('students')
+                ->cascadeOnDelete();
+        });
+
     }
 
     public function down(): void
@@ -194,6 +208,11 @@ return new class extends Migration
 
         Schema::table('task_assignment_answers', function (Blueprint $table) {
             $table->dropForeign(['task_assignment_coordinate_id']);
+        });
+
+        Schema::table('worksheet_solutions', function (Blueprint $table) {
+            $table->dropForeign(['worksheet_id']);
+            $table->dropForeign(['student_id']);
         });
 
     }

@@ -10,7 +10,7 @@ class Task_shortAnswer_answer extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['answer', 'imgURL'];
+    protected $fillable = ['answer'];
 
     public function question()
     {

@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreWorksheetRequest;
 use App\Http\Resources\WorksheetResource;
 use App\Models\Worksheet;
+use App\Services\Tasks\StoreAssignmentService;
 use App\Services\Tasks\StoreGroupingTaskService;
 use App\Services\Tasks\StorePairingTaskService;
 use App\Services\Tasks\StoreShortAnswerService;
-use App\Services\Tasks\StoreAssignmentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -40,7 +40,7 @@ class WorkSheetController extends Controller
         StoreShortAnswerService $shortAnswerService,
         StoreAssignmentService $assignmentService)
     {
-        DB::transaction(function () use ($request, $groupingService, $pairingService, $shortAnswerService,$assignmentService) {
+        DB::transaction(function () use ($request, $groupingService, $pairingService, $shortAnswerService, $assignmentService) {
 
             $worksheet = Worksheet::create([
                 'title' => $request->title,
@@ -74,7 +74,7 @@ class WorkSheetController extends Controller
                     $shortAnswerService->store($task, $taskData);
                 }
                 if ($taskData['task_type_id'] == 4) {
-                    $assignmentService->store($task,$taskData);
+                    $assignmentService->store($task, $taskData);
                 }
             }
         });

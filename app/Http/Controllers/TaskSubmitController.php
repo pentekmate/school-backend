@@ -1,53 +1,54 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Worksheet_solution;
 use Illuminate\Http\Request;
-use App\Services\TaskEvaluation\TaskEvaluatorFactory;
 
 class TaskSubmitController extends Controller
 {
     public function submit(Request $request)
     {
-        $worksheetId = $request->worksheet_id;
-        $studentId = $request->studentID;
-        $submittedTasks = $request->tasks;
+
+        $worksheetSolution = Worksheet_solution::create([
+            'worksheet_id' => $request['worksheet_id'],
+            'student_id' => $request['studentID'],
+            'score' => 0, 
+        ]);
 
         $totalScore = 0;
         $taskResults = [];
 
-        foreach ($submittedTasks as $submittedTask) {
+      
+        foreach ($request['tasks'] as $submittedTask) {
 
-            $taskId = $submittedTask['task_id'];
-            $taskType = $submittedTask['task_type']; // vagy task_type_id map a típusra
+     
+            $typeMap = [1 => 'grouping', 2 => 'shortAnswer'];
+            $typeName = $typeMap[$submittedTask['task_type_id']];
 
-            // Task evaluator kiválasztása
-            $evaluator = TaskEvaluatorFactory::make($taskType);
+         
+            $evaluator = \App\Services\TaskEvaluation\TaskEvaluatorFactory::make($typeName);
 
-            // Kiértékelés
-            $taskScore = $evaluator->evaluate($taskId, $submittedTask['solutions']);
+           
+            $taskScore = $evaluator->evaluate(
+                $submittedTask['task_id'],
+                $submittedTask['solutions'],
+                $worksheetSolution->id
+            );
 
             $totalScore += $taskScore;
-
             $taskResults[] = [
-                'task_id' => $taskId,
-                'score'   => $taskScore
+                'task_id' => $submittedTask['task_id'],
+                'score' => $taskScore,
             ];
-
-            // 💡 Itt mentheted az egyes task attempteket az adatbázisba
-            // TaskAttempt::create([...]);
         }
 
-        // WorksheetAttempt tárolása
-        // WorksheetAttempt::create([
-        //     'worksheet_id' => $worksheetId,
-        //     'student_id' => $studentId,
-        //     'score' => $totalScore,
-        // ]);
+     
+        $worksheetSolution->update(['score' => $totalScore]);
 
         return response()->json([
-            'tasks' => $taskResults,
-            'total_score' => $totalScore
+            'message' => 'Sikeres mentés!',
+            'total_score' => $totalScore,
+            'results' => $taskResults,
         ]);
     }
 }

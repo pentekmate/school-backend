@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('worksheet_soultions', function (Blueprint $table) {
+        Schema::create('worksheet_solutions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('worksheet_id');
-            $table->unsignedBigInteger('studentID');
+            $table->unsignedBigInteger('worksheet_id')->unique();
+            $table->unsignedBigInteger('student_id')->unique();
             $table->integer('score');
-            $table->timestamps();
         });
     }
 

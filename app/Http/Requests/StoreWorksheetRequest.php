@@ -407,21 +407,21 @@ class StoreWorksheetRequest extends FormRequest
     {
         $assignmentImage = $task['assignment']['image'] ?? null;
 
-        if(!$assignmentImage){
+        if (! $assignmentImage) {
             $validator->errors()->add(
                 "tasks.$index.assignment.image",
-                "Kötelező képet megadni."
+                'Kötelező képet megadni.'
             );
         }
 
-        if($assignmentImage){
+        if ($assignmentImage) {
             $this->validateIMG(
                 $validator,
                 $assignmentImage,
                 "tasks.$index.assignment.image"
             );
         }
- 
+
         if (empty($task['assignment']['coordinatesAndAnswers'])) {
             $validator->errors()->add(
                 "tasks.$index.assignment.coordinatesAndAnswers",

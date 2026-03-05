@@ -29,9 +29,9 @@ class TaskResource extends JsonResource
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
-            'task_type' => 'shortAnswer',
+            'task_type' => $this->task_type->id,
             'feedback' => $this->task_shortAnswer?->feedback,
-            'task_id'=>$this->id,
+            'task_id' => $this->id,
 
             'questionsOrImages' => $this->task_shortAnswer?->questions->map(function ($question) {
                 return [
@@ -55,9 +55,9 @@ class TaskResource extends JsonResource
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
-            'task_type' => 'grouping',
+            'task_type' => $this->task_type->id,
             'feedback' => $this->task_grouping?->feedback,
-            'task_id'=>$this->id,
+            'task_id' => $this->id,
 
             'groups' => $this->task_grouping?->groups
                 ->map(function ($group) {
@@ -73,7 +73,7 @@ class TaskResource extends JsonResource
                         return [
                             'id' => $item->id,
                             'name' => $item->name,
-                            'imgURL'=>$item->imgUrl
+                            'imgURL' => $item->imgUrl,
 
                         ];
                     });
@@ -88,8 +88,8 @@ class TaskResource extends JsonResource
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
-            'task_type' => 'assignment',
-            'task_id'=>$this->id,
+            'task_type' => $this->task_type->id,
+            'task_id' => $this->id,
 
             'img' => $image?->imageURL, // vagy ami az oszlop neve
 
@@ -118,9 +118,9 @@ class TaskResource extends JsonResource
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
-            'task_type' => 'pairing',
+            'task_type' => $this->task_type->id,
             'feedback' => $this->task_pair?->feedback,
-            'task_id'=>$this->id,
+            'task_id' => $this->id,
 
             'pairQuestions' => $this->task_pair?->pairGroups
                 ->flatMap->questions
@@ -130,7 +130,7 @@ class TaskResource extends JsonResource
                         'question' => $question->question,
                         'img' => $question->imgURL,
                     ];
-                }),
+                })->shuffle()->values(),
             'pairAnswers' => $this->task_pair?->pairGroups->flatMap->answers
                 ->map(function ($answer) {
                     return [
@@ -138,7 +138,7 @@ class TaskResource extends JsonResource
                         'answer' => $answer->answer,
                         'img' => $answer->imgURL,
                     ];
-                }),
+                })->shuffle()->values(),
         ];
     }
 }
