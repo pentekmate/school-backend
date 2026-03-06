@@ -2,8 +2,9 @@
 
 namespace App\Services\TaskEvaluation\Evaluators;
 
-use App\Models\Task_shortAnswer_question;
 use App\Models\ShortAnswer_user_answer;
+use App\Models\Task_shortAnswer_question;
+
 class ShortAnswerEvaluator
 {
     /**
@@ -11,33 +12,35 @@ class ShortAnswerEvaluator
      *
      * @return array
      */
-  public function evaluate(int $taskId, array $solutions, int $solutionId): int
-{
-    $score = 0;
+    public function evaluate(int $taskId, array $solutions, int $solutionId): int
+    {
+        $score = 0;
 
-    foreach ($solutions as $sol) {
-      
-        $question = Task_shortAnswer_question::with('answer')
-            ->find($sol['question_id']);
+        foreach ($solutions as $sol) {
 
-        if (!$question) continue;
+            $question = Task_shortAnswer_question::with('answer')
+                ->find($sol['question_id']);
 
-        ShortAnswer_user_answer::create([
-            'worksheet_solution_id'         => $solutionId,
-            'task_short_answer_question_id' => $question->id, 
-            'user_answer'              => $sol['answer'], 
-        ]);
+            if (! $question) {
+                continue;
+            }
 
-        $submitted = $this->normalize($sol['answer']);
-        $correct   = $this->normalize($question->answer->answer ?? '');
+            ShortAnswer_user_answer::create([
+                'worksheet_solution_id' => $solutionId,
+                'task_short_answer_question_id' => $question->id,
+                'user_answer' => $sol['answer'],
+            ]);
 
-        if ($submitted === $correct) {
-            $score++;
+            $submitted = $this->normalize($sol['answer']);
+            $correct = $this->normalize($question->answer->answer ?? '');
+
+            if ($submitted === $correct) {
+                $score++;
+            }
         }
-    }
 
-    return $score;
-}
+        return $score;
+    }
 
     /**
      * Szöveg normalizálása (kisbetű, trim)

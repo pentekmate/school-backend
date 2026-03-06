@@ -115,6 +115,9 @@ class TaskResource extends JsonResource
 
     private function pairingData()
     {
+        // Ellenőrizzük, hogy van-e task_pair, különben hiba lesz a loop-nál
+        $pairGroups = $this->task_pair?->pairGroups ?: collect();
+
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
@@ -122,23 +125,26 @@ class TaskResource extends JsonResource
             'feedback' => $this->task_pair?->feedback,
             'task_id' => $this->id,
 
-            'pairQuestions' => $this->task_pair?->pairGroups
-                ->flatMap->questions
-                ->map(function ($question) {
-                    return [
-                        'id' => $question->id,
-                        'question' => $question->question,
-                        'img' => $question->imgURL,
-                    ];
-                })->shuffle()->values(),
-            'pairAnswers' => $this->task_pair?->pairGroups->flatMap->answers
-                ->map(function ($answer) {
-                    return [
-                        'id' => $answer->id,
-                        'answer' => $answer->answer,
-                        'img' => $answer->imgURL,
-                    ];
-                })->shuffle()->values(),
+            'pairQuestions' => $pairGroups->map(function ($group) {
+                // A hasOne kapcsolatot sima tulajdonosként érjük el
+                $q = $group->question;
+
+                return $q ? [
+                    'id' => $q->id,
+                    'question' => $q->question,
+                    'img' => $q->imgURL,
+                ] : null;
+            })->filter()->shuffle()->values(),
+
+            'pairAnswers' => $pairGroups->map(function ($group) {
+                $a = $group->answer;
+
+                return $a ? [
+                    'id' => $a->id,
+                    'answer' => $a->answer,
+                    'img' => $a->imgURL,
+                ] : null;
+            })->filter()->shuffle()->values(),
         ];
     }
 }

@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('short_answer_user_answers', function (Blueprint $table) {
+        Schema::create('grouping_user_answers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('worksheet_solution_id');
-            $table->unsignedBigInteger('task_short_answer_question_id');
-            $table->string('user_answer', 30);
         });
     }
 
@@ -25,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('short_answer_user_answers');
+        Schema::dropIfExists('grouping_user_answers');
     }
 };

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Worksheet_solution;
 use Illuminate\Http\Request;
 
@@ -12,23 +13,19 @@ class TaskSubmitController extends Controller
         $worksheetSolution = Worksheet_solution::create([
             'worksheet_id' => $request['worksheet_id'],
             'student_id' => $request['studentID'],
-            'score' => 0, 
+            'score' => 0,
         ]);
 
         $totalScore = 0;
         $taskResults = [];
 
-      
         foreach ($request['tasks'] as $submittedTask) {
 
-     
-            $typeMap = [1 => 'grouping', 2 => 'shortAnswer'];
+            $typeMap = [1 => 'grouping', 2 => 'pairing', 3 => 'short_answer', 4 => 'assignment'];
             $typeName = $typeMap[$submittedTask['task_type_id']];
 
-         
             $evaluator = \App\Services\TaskEvaluation\TaskEvaluatorFactory::make($typeName);
 
-           
             $taskScore = $evaluator->evaluate(
                 $submittedTask['task_id'],
                 $submittedTask['solutions'],
@@ -42,7 +39,6 @@ class TaskSubmitController extends Controller
             ];
         }
 
-     
         $worksheetSolution->update(['score' => $totalScore]);
 
         return response()->json([

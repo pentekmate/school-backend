@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory()->create();
-        
+
         $this->call([
             ClassRoomSeeder::class,
         ]);
@@ -27,6 +27,10 @@ class DatabaseSeeder extends Seeder
         ]);
         $this->call([
             TaskTypeSeeder::class,
+        ]);
+
+         $this->call([
+            StudentSeeder::class,
         ]);
 
         // Worksheet::factory()

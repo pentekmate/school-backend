@@ -21,4 +21,8 @@ class Group extends Model
     {
         return $this->hasMany(GroupItem::class, 'group_id');
     }
+
+    public function userAnswer(){
+        return $this->hasMany(Grouping_user_answer::class,'group_id');
+    }
 }

@@ -29,6 +29,6 @@ class Worksheet extends Model
 
     public function solutions()
     {
-        return $this->hasMany(Worksheet_soultion::class, 'worksheet_id');
+        return $this->hasMany(Worksheet_solution::class, 'worksheet_id');
     }
 }

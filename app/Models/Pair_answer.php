@@ -16,4 +16,11 @@ class Pair_answer extends Model
     {
         return $this->belongsTo(Pair_groups::class, 'pair_group_id');
     }
+
+    public function userAnswer()
+    {
+        return $this->hasMany(Pairing_user_answer::class, 'pair_answer_id');
+    }
+
+ 
 }
