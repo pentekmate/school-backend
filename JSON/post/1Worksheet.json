@@ -1,0 +1,135 @@
+{
+    "title": "Témazáró feladatlap",
+    "user_id": 1,
+    "classroom_id": 1,
+    "subject_id": 1,
+    "lifetime_minutes": 60,
+    "max_time_to_resolve_minutes": 45,
+    "grade": 1,
+    "is_public": 0,
+    "tasks": [
+        {
+            "task_title": "Állatok csoportosítása",
+            "task_description": "Húzd a megfelelő csoportba",
+            "feedback": "ezazzzz",
+            "task_type_id": 1,
+            "grouping": {
+                "groups": [
+                    {
+                        "name": "Emlősök",
+                        "items": [
+                            {
+                                "name": "Kutya"
+                            },
+                            {
+                                "name": "Macska"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Madarak",
+                        "items": [
+                            {
+                                "name": "Sas"
+                            },
+                            {
+                                "name": "Galamb"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Halak",
+                        "items": [
+                            {
+                                "name": "Ponty"
+                            },
+                            {
+                                "name": "Harcsa"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Hüllők",
+                        "items": [
+                            {
+                                "name": "Teknős"
+                            },
+                            {
+                                "name": "Aligátor"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "task_title": "Uralkodók és tetteik",
+            "task_description": "Párosítsd az uralkodókat a hozzájuk kapcsolódó eseményekkel!",
+            "feedback": "Szép munka!",
+            "task_type_id": 2,
+            "pairing": {
+                "pairing_groups": [
+                    {
+                        "pair_question": "I. István",
+                        "pair_answer": "A keresztény magyar állam megalapítása"
+                    },
+                    {
+                        "pair_question": "Mátyás király",
+                        "pair_answer": "Fekete sereg létrehozása"
+                    },
+                    {
+                        "pair_question": "IV. Béla",
+                        "pair_answer": "Az ország újjáépítése a tatárjárás után"
+                    }
+                ]
+            }
+        },
+        {
+            "task_title": "Állatos kérdések",
+            "task_description": "Válaszolj röviden a kérdésekre",
+            "task_type_id": 3,
+            "feedback": "Szép munka!",
+            "short_answer": {
+                "questions": [
+                    {
+                        "question": "Melyik állat ugat?",
+                        "answer": "Kutya"
+                    },
+                    {
+                        "question": "Melyik állat nyávog?",
+                        "answer": "Macska"
+                    },
+                    {
+                        "question": "Melyik állat repül?",
+                        "answer": "Sas"
+                    }
+                ]
+            }
+        },
+        {
+            "task_title": "Állatok csoportosítása",
+            "task_description": "Húzd a megfelelő csoportba",
+            "feedback": "ezazzzz",
+            "task_type_id": 4,
+            "assignment": {
+                "image": "https://picsum.photos/640/480?random=6",
+                "coordinatesAndAnswers": [
+                    {
+                        "coordinate": "225,333",
+                        "answers": [
+                            {
+                                "answer":"ss",
+                                "isCorrect":true
+                            },
+                            {
+                                "answer":"ss",
+                                "isCorrect":false
+                            }
+ 
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

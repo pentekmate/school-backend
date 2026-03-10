@@ -11,8 +11,9 @@ class TaskEvaluatorFactory
     {
         return match ($taskType) {
             'short_answer' => new ShortAnswerEvaluator,
-            // 'grouping'    => new Evaluators\GroupingEvaluator(),
+            'grouping' => new Evaluators\GroupingEvaluator,
             'pairing' => new Evaluators\PairingEvaluator,
+            'assignment'=>new Evaluators\AssignmentEvaluator,
             default => throw new Exception('Unknown task type: '.$taskType),
         };
     }

@@ -26,7 +26,9 @@ class Worksheet_solution extends Model
     {
         return $this->hasMany(Pairing_user_answer::class, 'worksheet_solution_id');
     }
-    public function groupingAnswers(){
-        return $this->hasMany(Grouping_user_answer::class,'worksheet_solution_id');
+
+    public function groupingAnswers()
+    {
+        return $this->hasMany(Grouping_user_answer::class, 'worksheet_solution_id');
     }
 }

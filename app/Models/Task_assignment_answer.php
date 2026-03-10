@@ -15,4 +15,9 @@ class Task_assignment_answer extends Model
     {
         return $this->belongsTo(Task_assignment_coordinate::class, 'task_assignment_coordinate_id');
     }
+
+    public function userAnswer()
+    {
+        return $this->hasMany(Assignment_user_answer::class, 'task_assignment_answer_id');
+    }
 }

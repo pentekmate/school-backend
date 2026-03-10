@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Student;
+use Illuminate\Database\Seeder;
 
 class StudentSeeder extends Seeder
 {
@@ -16,7 +15,7 @@ class StudentSeeder extends Seeder
         //
         Student::insert(
             [
-                ['id' => 1, 'name' => 'Joco','classroom_id'=>'1'],
+                ['id' => 1, 'name' => 'Joco', 'classroom_id' => '1'],
 
             ]);
     }

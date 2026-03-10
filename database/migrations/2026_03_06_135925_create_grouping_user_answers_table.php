@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('grouping_user_answers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->unsignedBigInteger('worksheet_solution_id');
+            $table->unsignedBigInteger('group_id');
+            $table->unsignedBigInteger('group_item_id');
         });
     }
 

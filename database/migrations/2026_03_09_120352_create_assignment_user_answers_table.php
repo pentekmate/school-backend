@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pairing_user_answers', function (Blueprint $table) {
+        Schema::create('assignment_user_answers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->unsignedBigInteger('worksheet_solution_id');
+            $table->unsignedBigInteger('task_assignment_image_id');
+            $table->unsignedBigInteger('task_assignment_coordinate_id');
+            $table->unsignedBigInteger('task_assignment_answer_id');
         });
     }
 
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pairing_user_answers');
+        Schema::dropIfExists('assignment_user_answers');
     }
 };

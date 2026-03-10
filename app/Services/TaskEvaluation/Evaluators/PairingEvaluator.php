@@ -43,5 +43,4 @@ class PairingEvaluator
 
         return $score;
     }
-
 }

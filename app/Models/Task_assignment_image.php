@@ -21,4 +21,9 @@ class Task_assignment_image extends Model
     {
         return $this->hasMany(task_assignment_coordinate::class, 'task_assignment_image_id');
     }
+
+    public function userAnswer()
+    {
+        return $this->hasMany(Task_assignment_answer::class, 'task_assigment_image_id');
+    }
 }

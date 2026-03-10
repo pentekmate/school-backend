@@ -17,17 +17,17 @@ class StoreAssignmentService
         $assignmentTask = $task->task_assignment()->create([
             'feedback' => $taskData['feedback'],
         ]);
-        $imagePathForAssignment = null;
-        if (! empty($taskData['assignment']['image'])) {
+        $imagePathForAssignment = $taskData['assignment']['image'];
+        // if (! empty($taskData['assignment']['image'])) {
 
-            if ($taskData['assignment']['image'] instanceof UploadedFile) {
+        //     if ($taskData['assignment']['image'] instanceof UploadedFile) {
 
-                $imagePathForAssignment = $this->imageUploadService->store($taskData['assignment']['image']);
-            } elseif (is_string($taskData['assignment']['image']) && str_starts_with($taskData['assignment']['image'], 'data:image')) {
+        //         $imagePathForAssignment = $this->imageUploadService->store($taskData['assignment']['image']);
+        //     } elseif (is_string($taskData['assignment']['image']) && str_starts_with($taskData['assignment']['image'], 'data:image')) {
 
-                $imagePathForAssignment = $this->imageUploadService->storeBase64($taskData['assignment']['image']);
-            }
-        }
+        //         $imagePathForAssignment = $this->imageUploadService->storeBase64($taskData['assignment']['image']);
+        //     }
+        // }
 
         $assignmentImage = $assignmentTask->image()->create([
             'imageURL' => $imagePathForAssignment,

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             TaskTypeSeeder::class,
         ]);
 
-         $this->call([
+        $this->call([
             StudentSeeder::class,
         ]);
 

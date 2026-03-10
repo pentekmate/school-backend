@@ -21,6 +21,4 @@ class Pair_answer extends Model
     {
         return $this->hasMany(Pairing_user_answer::class, 'pair_answer_id');
     }
-
- 
 }
