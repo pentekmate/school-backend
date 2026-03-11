@@ -29,9 +29,9 @@ class AssignmentEvaluator
 
                 Assignment_user_answer::create([
                     'worksheet_solution_id' => $solutionId,
-                    'task_assignment_image_id' =>$sol['img_id'],
-                    'task_assignment_coordinate_id'=>$coordinateAndAnswer['coordinate_id'],
-                    'task_assignment_answer_id'=>$coordinateAndAnswer['answer_id']
+                    'task_assignment_image_id' => $sol['img_id'],
+                    'task_assignment_coordinate_id' => $coordinateAndAnswer['coordinate_id'],
+                    'task_assignment_answer_id' => $coordinateAndAnswer['answer_id'],
                 ]);
             }
         }

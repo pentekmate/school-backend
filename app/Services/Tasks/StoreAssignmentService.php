@@ -18,6 +18,7 @@ class StoreAssignmentService
             'feedback' => $taskData['feedback'],
         ]);
         $imagePathForAssignment = $taskData['assignment']['image'];
+        // $imagePathForAssignment = null;
         // if (! empty($taskData['assignment']['image'])) {
 
         //     if ($taskData['assignment']['image'] instanceof UploadedFile) {

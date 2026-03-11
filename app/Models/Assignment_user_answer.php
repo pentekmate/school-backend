@@ -8,7 +8,7 @@ class Assignment_user_answer extends Model
 {
     //
 
-    protected $fillable = ['worksheet_solution_id','task_assignment_image_id','task_assignment_coordinate_id','task_assignment_answer_id'];
+    protected $fillable = ['worksheet_solution_id', 'task_assignment_image_id', 'task_assignment_coordinate_id', 'task_assignment_answer_id'];
 
     public function solution()
     {

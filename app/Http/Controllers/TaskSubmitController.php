@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SubmitWorksheetRequest;
 use App\Models\Worksheet_solution;
-use Illuminate\Http\Request;
 
 class TaskSubmitController extends Controller
 {
-    public function submit(Request $request)
+    public function submit(SubmitWorksheetRequest $request)
     {
 
         $worksheetSolution = Worksheet_solution::create([
             'worksheet_id' => $request['worksheet_id'],
-            'student_id' => $request['studentID'],
+            'student_id' => $request['student_id'],
             'score' => 0,
         ]);
 
