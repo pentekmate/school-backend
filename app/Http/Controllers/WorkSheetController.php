@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWorksheetRequest;
 use App\Http\Resources\WorksheetResource;
+use App\Http\Resources\WorksheetResultResource;
 use App\Models\Worksheet;
 use App\Services\Tasks\StoreAssignmentService;
 use App\Services\Tasks\StoreGroupingTaskService;
@@ -80,6 +81,20 @@ class WorkSheetController extends Controller
         });
 
         return response()->json(['success' => true]);
+    }
+
+    public function userAnswer($worksheetId, $studentId)
+    {
+        $worksheet = Worksheet::with('tasks')->findOrFail($worksheetId);
+        $solution = DB::table('worksheet_solutions')
+            ->where('worksheet_id', $worksheetId)
+            ->where('student_id', $studentId)
+            ->first();
+
+        // Beleerőszakoljuk a requestbe, így a TaskResultResource látni fogja!
+        request()->merge(['current_solution_id' => $solution->id ?? null]);
+
+        return new WorksheetResultResource($worksheet);
     }
 
     /**

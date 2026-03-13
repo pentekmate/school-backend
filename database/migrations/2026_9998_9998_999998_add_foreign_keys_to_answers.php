@@ -21,6 +21,9 @@ return new class extends Migration
                 ->references('id')
                 ->on('task_short_answer_questions')
                 ->cascadeOnDelete();
+
+            $table->index('worksheet_solution_id');
+            $table->index(['worksheet_solution_id', 'task_short_answer_question_id'], 'short_answer_lookup_speed_index');
         });
 
         Schema::table('pairing_user_answers', function (Blueprint $table) {
@@ -39,6 +42,8 @@ return new class extends Migration
                 ->on('pair_answers')
                 ->cascadeOnDelete();
 
+            $table->index('worksheet_solution_id');
+            $table->index(['worksheet_solution_id', 'pair_question_id', 'pair_answer_id'], 'pairing_lookup_speed_index');
         });
 
         Schema::table('grouping_user_answers', function (Blueprint $table) {
@@ -56,7 +61,8 @@ return new class extends Migration
                 ->references('id')
                 ->on('group_items')
                 ->cascadeOnDelete();
-
+            $table->index('worksheet_solution_id');
+            $table->index(['worksheet_solution_id', 'group_id', 'group_item_id'], 'grouping_lookup_speed_index');
         });
 
         Schema::table('assignment_user_answers', function (Blueprint $table) {
@@ -80,6 +86,8 @@ return new class extends Migration
                 ->on('task_assignment_answers')
                 ->cascadeOnDelete();
 
+            $table->index('worksheet_solution_id');
+            $table->index(['worksheet_solution_id', 'task_assignment_coordinate_id', 'task_assignment_image_id', 'task_assignment_answer_id'], 'assignment_lookup_speed_index');
         });
 
     }

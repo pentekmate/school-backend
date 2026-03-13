@@ -7,4 +7,5 @@ use Illuminate\Support\Facades\Route;
 Route::apiResource('worksheets', WorksheetController::class)
     ->only(['index', 'store']);
 
-Route::post('/tasks/submit', [TaskSubmitController::class, 'submit']);
+Route::post('/worksheet/submit', [TaskSubmitController::class, 'submit']);
+Route::get('/worksheet/{worksheetId}/userAnswer/{studentId}', [WorksheetController::class, 'userAnswer']);

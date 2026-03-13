@@ -56,6 +56,8 @@ class SubmitWorksheetRequest extends FormRequest
 
     private function validateGrouping($validator, $task, $index)
     {
+
+        $solutions = $task['solutions'] ?? [];
         $submittedTaskId = $task['task_id'] ?? 0;
         $path = "tasks.$index.solutions";
 
@@ -71,30 +73,36 @@ class SubmitWorksheetRequest extends FormRequest
                 'Hiányzó feladat kitöltések.'
             );
         }
+        $groups = collect($solutions)->pluck('group_id')->filter()->unique()->toArray();
+
+        $validGroupCount = DB::table('groups')
+            ->join('task_groupings', 'task_groupings.id', '=', 'groups.task_grouping_id')
+            ->whereIn('groups.id', $groups)
+            ->where('task_groupings.task_id', $submittedTaskId)
+            ->count();
+        if (count($groups) !== $validGroupCount) {
+            $validator->errors()->add('Hibás adatok', $path);
+
+            return;
+        }
+
         foreach (($task['solutions'] ?? []) as $solIndex => $sol) {
+            $group_items = $sol['group_item_ids'];
 
-            $isValidGroup = DB::table('groups')
+            if (empty($group_items)) {
+                continue;
+            }
+
+            $validIds = DB::table('group_items')
+                ->join('groups', 'groups.id', '=', 'group_items.group_id')
                 ->join('task_groupings', 'task_groupings.id', '=', 'groups.task_grouping_id')
-                ->where('groups.id', $sol['group_id'] ?? 0)
+                ->whereIn('group_items.id', $group_items)
                 ->where('task_groupings.task_id', $submittedTaskId)
-                ->exists();
+                ->count();
 
-            if (! $isValidGroup) {
+            if (count($group_items) !== $validIds) {
                 $validator->errors()->add($path, 'A megadott adatok érvénytelenek.');
                 break;
-            }
-            foreach ($sol['group_item_ids'] as $item) {
-                $isValidItem = DB::table('group_items')
-                    ->join('groups', 'groups.id', '=', 'group_items.group_id')
-                    ->join('task_groupings', 'task_groupings.id', '=', 'groups.task_grouping_id')
-                    ->where('group_items.id', $item ?? 0)
-                    ->where('task_groupings.task_id', $submittedTaskId)
-                    ->exists();
-
-                if (! $isValidItem) {
-                    $validator->errors()->add($path, 'A megadott adatok érvénytelenek.');
-                    break;
-                }
             }
 
         }
@@ -105,6 +113,7 @@ class SubmitWorksheetRequest extends FormRequest
     {
         $path = "tasks.$index.solutions";
         $submittedTaskId = $task['task_id'] ?? 0;
+        $solutions = $task['solutions'] ?? [];
 
         if (! isset($task['task_id']) || ! isset($task['solutions'])) {
             $validator->errors()->add("tasks.$index.task_id", 'Hiányzó feladat adatok.');
@@ -112,28 +121,26 @@ class SubmitWorksheetRequest extends FormRequest
             return;
         }
 
-        foreach (($task['solutions'] ?? []) as $solIndex => $sol) {
+        $submittedQuestions = collect($solutions)->pluck('question_id')->filter()->unique()->toArray();
+        $submittedAnswers = collect($solutions)->pluck('answer_id')->filter()->unique()->toArray();
 
-            $isValidQuestion = DB::table('pair_questions')
-                ->join('pair_groups', 'pair_questions.pair_group_id', '=', 'pair_groups.id')
-                ->join('task_pairs', 'pair_groups.task_pair_id', '=', 'task_pairs.id')
-                ->where('pair_questions.id', $sol['question_id'] ?? 0)
-                ->where('task_pairs.task_id', $submittedTaskId)
-                ->exists();
+        $validQuestionCount = DB::table('pair_questions')
+            ->join('pair_groups', 'pair_questions.pair_group_id', '=', 'pair_groups.id')
+            ->join('task_pairs', 'pair_groups.task_pair_id', '=', 'task_pairs.id')
+            ->whereIn('pair_questions.id', $submittedQuestions)
+            ->where('task_pairs.task_id', $submittedTaskId)
+            ->count();
+        $validAnswerCount = DB::table('pair_answers')
+            ->join('pair_groups', 'pair_answers.pair_group_id', '=', 'pair_groups.id')
+            ->join('task_pairs', 'pair_groups.task_pair_id', '=', 'task_pairs.id')
+            ->whereIn('pair_answers.id', $submittedAnswers)
+            ->where('task_pairs.task_id', $submittedTaskId)
+            ->count();
 
-            $isValidAnswer = DB::table('pair_answers')
-                ->join('pair_groups', 'pair_answers.pair_group_id', '=', 'pair_groups.id')
-                ->join('task_pairs', 'pair_groups.task_pair_id', '=', 'task_pairs.id')
-                ->where('pair_answers.id', $sol['answer_id'] ?? 0)
-                ->where('task_pairs.task_id', $submittedTaskId)
-                ->exists();
+        if (count($submittedAnswers) !== $validAnswerCount || count($submittedQuestions) !== $validQuestionCount) {
+            $validator->errors()->add("tasks.$index.solutions", 'Érvénytelen adatok!');
 
-            if (! $isValidQuestion || ! $isValidAnswer) {
-
-                $validator->errors()->add($path, 'A megadott adatok érvénytelenek.');
-
-                break;
-            }
+            return;
         }
     }
 
@@ -153,20 +160,78 @@ class SubmitWorksheetRequest extends FormRequest
                 'Hiányzó feladat kitöltések.'
             );
         }
-        foreach (($task['solutions'] ?? []) as $solIndex => $sol) {
 
-            $isValidQuestion = DB::table('task_short_answer_questions')
-                ->join('task_short_answers', 'task_short_answer_questions.task_short_answers_id', '=', 'task_short_answers.id')
-                ->where('task_short_answer_questions.id', $sol['question_id'] ?? 0)
-                ->where('task_short_answers.task_id', $submittedTaskId)
-                ->exists();
+        $solutions = $task['solutions'] ?? [];
+
+        $submittedQuestions = collect($solutions)->pluck('question_id')->filter()->unique()->toArray();
+
+        $validQuestionCount = DB::table('task_short_answer_questions')
+            ->join('task_short_answers', 'task_short_answer_questions.task_short_answers_id', '=', 'task_short_answers.id')
+            ->whereIn('task_short_answer_questions.id', $submittedQuestions)
+            ->where('task_short_answers.task_id', $submittedTaskId)
+            ->count();
+
+        if ($validQuestionCount !== count($submittedQuestions)) {
+            $validator->errors()->add("tasks.$index.solutions", 'Érvénytelen kérdés azonosítók.');
+
+            return;
+        }
+
+        foreach (($task['solutions'] ?? []) as $solIndex => $sol) {
 
             $answerIsValid = ! isset($sol['answer']) || is_string($sol['answer']);
 
-            if (! $isValidQuestion || ! $answerIsValid) {
+            if (! $answerIsValid) {
 
                 $validator->errors()->add($path, 'A megadott adatok érvénytelenek.');
 
+                break;
+            }
+        }
+    }
+
+    protected function validateAssignment($validator, $task, $index)
+    {
+        $path = "tasks.$index.solutions";
+        $submittedTaskId = $task['task_id'] ?? 0;
+        $solutions = $task['solutions'] ?? [];
+
+        foreach ($solutions as $solIndex => $sol) {
+
+            $imgId = $sol['img_id'] ?? 0;
+            $imgExists = DB::table('task_assignment_images')
+                ->join('task_assignments', 'task_assignment_images.task_assignment_id', '=', 'task_assignments.id')
+                ->where('task_assignment_images.id', $imgId)
+                ->where('task_assignments.task_id', $submittedTaskId)
+                ->exists();
+
+            if (! $imgExists) {
+                $validator->errors()->add($path, 'Érvénytelen kép azonosító.');
+
+                continue;
+            }
+
+            $answers = $sol['answers'] ?? [];
+            if (empty($answers)) {
+                continue;
+            }
+
+            $submittedCoordIds = collect($answers)->pluck('coordinate_id')->unique()->toArray();
+            $submittedAnswerIds = collect($answers)->pluck('answer_id')->unique()->toArray();
+
+            $validCoordsCount = DB::table('task_assignment_coordinates')
+                ->whereIn('id', $submittedCoordIds)
+                ->where('task_assignment_image_id', $imgId)
+                ->count();
+
+            $validAnswersCount = DB::table('task_assignment_answers')
+                ->join('task_assignment_coordinates', 'task_assignment_answers.task_assignment_coordinate_id', '=', 'task_assignment_coordinates.id')
+                ->whereIn('task_assignment_answers.id', $submittedAnswerIds)
+                ->where('task_assignment_coordinates.task_assignment_image_id', $imgId)
+                ->count();
+
+            if ($validCoordsCount !== count($submittedCoordIds) || $validAnswersCount !== count($submittedAnswerIds)) {
+                $validator->errors()->add($path, 'A megadott koordináták vagy válaszok érvénytelenek.');
                 break;
             }
         }
@@ -179,59 +244,6 @@ class SubmitWorksheetRequest extends FormRequest
             'message' => 'Validációs hiba történt.',
             'errors' => $validator->errors(),
         ], 422));
-    }
-
-    protected function validateAssignment($validator, $task, $index)
-    {
-        $path = "tasks.$index.solutions";
-        $submittedTaskId = $task['task_id'] ?? 0;
-
-        if (! isset($task['task_id']) || ! isset($task['solutions'])) {
-            $validator->errors()->add("tasks.$index.task_id", 'Hiányzó feladat adatok.');
-
-            return;
-        }
-
-        foreach (($task['solutions'] ?? []) as $solIndex => $sol) {
-
-            $imgExists = DB::table('task_assignment_images')
-                ->join('task_assignments', 'task_assignment_images.task_assignment_id', '=', 'task_assignments.id')
-                ->where('task_assignment_images.id', $sol['img_id'] ?? 0)
-                ->where('task_assignments.task_id', $submittedTaskId)
-                ->exists();
-
-            if (! $imgExists) {
-                $validator->errors()->add($path, 'A megadott adatok érvénytelenek.');
-                break;
-            }
-
-            if (! isset($sol['answers']) || ! is_array($sol['answers'])) {
-
-                continue;
-            }
-
-            foreach ($sol['answers'] as $ans) {
-                // $coordinateExists = DB::table('task_assignment_coordinates')
-                //     ->where('id', $ans['coordinate_id'] ?? 0)
-                //     ->exists();
-
-                $coordinateExists = DB::table('task_assignment_coordinates')
-                    ->join('task_assignment_images', 'task_assignment_images.id', '=', 'task_assignment_coordinates.task_assignment_image_id')
-                    ->join('task_assignments', 'task_assignment_images.task_assignment_id', '=', 'task_assignments.id')
-                    ->where('task_assignment_images.id', $ans['coordinate_id'] ?? 0)
-                    ->where('task_assignments.task_id', $submittedTaskId)
-                    ->exists();
-
-                $answerExists = DB::table('task_assignment_answers')
-                    ->where('id', $ans['answer_id'] ?? 0)
-                    ->exists();
-
-                if (! $coordinateExists || ! $answerExists) {
-                    $validator->errors()->add($path, 'A megadott adatok érvénytelenek.');
-                    break 2;
-                }
-            }
-        }
     }
 
     public function messages(): array
