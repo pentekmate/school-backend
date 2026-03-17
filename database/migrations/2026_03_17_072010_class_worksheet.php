@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('classroom_worksheet', function (Blueprint $table) {
+        Schema::create('class_worksheets', function (Blueprint $table) {
+            $table->id();
+
             $table->unsignedBigInteger('classroom_id');
+
             $table->unsignedBigInteger('worksheet_id');
 
-            $table->primary(['classroom_id', 'worksheet_id']);
+            $table->string('access_code', 8)->unique();
+            $table->string('password', 8)->nullable();
 
-            $table->index('classroom_id');
-            $table->index('worksheet_id');
+            $table->timestamps();
         });
 
     }

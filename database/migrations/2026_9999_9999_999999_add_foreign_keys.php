@@ -22,10 +22,6 @@ return new class extends Migration
             $table->foreign('subject_id')
                 ->references('id')->on('subjects')
                 ->cascadeOnDelete();
-
-            $table->foreign('classroom_id')
-                ->references('id')->on('classrooms')
-                ->cascadeOnDelete();
         });
 
         Schema::table('task_types', function (Blueprint $table) {
@@ -42,12 +38,6 @@ return new class extends Migration
             $table->foreign('task_type_id')
                 ->references('id')->on('task_types')
                 ->cascadeOnDelete();
-        });
-
-        Schema::table('classroom_worksheet', function (Blueprint $table) {
-            $table->foreign('classroom_id')->references('id')->on('classrooms')->cascadeOnDelete();
-            $table->foreign('worksheet_id')->references('id')->on('worksheets')->cascadeOnDelete();
-
         });
 
         Schema::table('students', function (Blueprint $table) {
@@ -124,6 +114,11 @@ return new class extends Migration
                 ->cascadeOnDelete();
         });
 
+        Schema::table('class_worksheets', function (Blueprint $table) {
+            $table->foreign('classroom_id')->references('id')->on('classrooms')->cascadeOnDelete();
+            $table->foreign('worksheet_id')->references('id')->on('worksheets')->cascadeOnDelete();
+        });
+
     }
 
     public function down(): void
@@ -140,16 +135,10 @@ return new class extends Migration
         Schema::table('worksheets', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->dropForeign(['subject_id']);
-            $table->dropForeign(['classroom_id']);
         });
 
         Schema::table('classrooms', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
-        });
-
-        Schema::table('classroom_worksheet', function (Blueprint $table) {
-            $table->dropForeign(['classroom_id']);
-            $table->dropForeign(['worksheet_id']);
         });
 
         Schema::table('students', function (Blueprint $table) {
@@ -213,6 +202,11 @@ return new class extends Migration
         Schema::table('worksheet_solutions', function (Blueprint $table) {
             $table->dropForeign(['worksheet_id']);
             $table->dropForeign(['student_id']);
+        });
+
+        Schema::table('class_worksheets', function (Blueprint $table) {
+            $table->dropForeign(['classroom_id']);
+            $table->dropForeign(['worksheet_id']);
         });
 
     }

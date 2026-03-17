@@ -1,17 +1,19 @@
 {
-    "title": "Témazáró feladatlap",
+    "title": "Töri feladatlap",
     "user_id": 1,
-    "classroom_id": 1,
+    "assginments":[
+        {"classroom_id":1,"password":"alma123"},
+        {"classroom_id":2,"password":"körte123"}
+    ],
     "subject_id": 1,
     "lifetime_minutes": 60,
     "max_time_to_resolve_minutes": 45,
-    "grade": 1,
+    "max_points": 1,
     "is_public": 0,
     "tasks": [
         {
             "task_title": "Állatok csoportosítása",
             "task_description": "Húzd a megfelelő csoportba",
-            "feedback": "ezazzzz",
             "task_type_id": 1,
             "grouping": {
                 "groups": [
@@ -65,7 +67,6 @@
         {
             "task_title": "Uralkodók és tetteik",
             "task_description": "Párosítsd az uralkodókat a hozzájuk kapcsolódó eseményekkel!",
-            "feedback": "Szép munka!",
             "task_type_id": 2,
             "pairing": {
                 "pairing_groups": [
@@ -88,7 +89,6 @@
             "task_title": "Állatos kérdések",
             "task_description": "Válaszolj röviden a kérdésekre",
             "task_type_id": 3,
-            "feedback": "Szép munka!",
             "short_answer": {
                 "questions": [
                     {
@@ -109,7 +109,6 @@
         {
             "task_title": "Állatok csoportosítása",
             "task_description": "Húzd a megfelelő csoportba",
-            "feedback": "ezazzzz",
             "task_type_id": 4,
             "assignment": {
                 "image": "https://picsum.photos/640/480?random=6",

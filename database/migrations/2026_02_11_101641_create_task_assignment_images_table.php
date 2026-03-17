@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->unsignedBigInteger('task_assignment_id');
-            $table->string('imageURL');
+            $table->string('imgURL');
         });
     }
 

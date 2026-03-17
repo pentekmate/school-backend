@@ -16,4 +16,9 @@ class Classroom extends Model
     {
         return $this->hasMany(Student::class, 'classroom_id');
     }
+
+    public function worksheets()
+    {
+        return $this->belongsToMany(Worksheet::class, 'class_worksheet');
+    }
 }

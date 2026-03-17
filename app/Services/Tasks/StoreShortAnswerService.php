@@ -14,9 +14,7 @@ class StoreShortAnswerService
 
     public function store(Task $task, array $taskData)
     {
-        $short_answer = $task->task_shortAnswer()->create([
-            'feedback' => $taskData['feedback'],
-        ]);
+        $short_answer = $task->task_shortAnswer()->create();
 
         foreach ($taskData['short_answer']['questions'] as $questionItem) {
 

@@ -10,7 +10,7 @@ class Task_assignment_image extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['imageURL'];
+    protected $fillable = ['imgURL'];
 
     public function task_assignment()
     {

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Cache;
 
 class TaskResource extends JsonResource
 {
@@ -14,14 +15,18 @@ class TaskResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return match ($this->task_type->name) {
-            'short_answer' => $this->shortAnswerData(),
-            'grouping' => $this->groupingData(),
-            'assignment' => $this->assigmentData(),
-            'pairing' => $this->pairingData(),
-            default => [],
-        };
 
+        $cacheKey = "task_blank_structure_{$this->id}";
+
+        return Cache::remember($cacheKey, now()->addDays(1), function () {
+            return match ($this->task_type->name) {
+                'short_answer' => $this->shortAnswerData(),
+                'grouping' => $this->groupingData(),
+                'assignment' => $this->assigmentData(),
+                'pairing' => $this->pairingData(),
+                default => [],
+            };
+        });
     }
 
     private function shortAnswerData()
@@ -30,7 +35,7 @@ class TaskResource extends JsonResource
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
             'task_type' => $this->task_type->id,
-            'feedback' => $this->task_shortAnswer?->feedback,
+
             'task_id' => $this->id,
 
             'questionsOrImages' => $this->task_shortAnswer?->questions->map(function ($question) {
@@ -56,7 +61,7 @@ class TaskResource extends JsonResource
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
             'task_type' => $this->task_type->id,
-            'feedback' => $this->task_grouping?->feedback,
+
             'task_id' => $this->id,
 
             'groups' => $this->task_grouping?->groups
@@ -122,7 +127,7 @@ class TaskResource extends JsonResource
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
             'task_type' => $this->task_type->id,
-            'feedback' => $this->task_pair?->feedback,
+
             'task_id' => $this->id,
 
             'pairQuestions' => $pairGroups->map(function ($group) {

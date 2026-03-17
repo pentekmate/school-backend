@@ -9,6 +9,14 @@
                 {
                     "question_id": 1,
                     "answer": "kutya"
+                },
+                 {
+                    "question_id": 2,
+                    "answer": "kutya"
+                },
+                 {
+                    "question_id": 3,
+                    "answer": "kutya"
                 }
             ]
         }

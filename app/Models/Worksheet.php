@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Worksheet extends Model
 {
     //
-    protected $fillable = ['title', 'user_id', 'classroom_id', 'subject_id', 'lifetime_minutes', 'max_time_to_resolve_minutes', 'grade', 'is_public'];
+    protected $fillable = ['title', 'user_id', 'classroom_id', 'subject_id', 'lifetime_minutes', 'max_time_to_resolve_minutes', 'max_points', 'is_public', 'assignments'];
 
     use HasFactory;
 
@@ -30,5 +30,10 @@ class Worksheet extends Model
     public function solutions()
     {
         return $this->hasMany(Worksheet_solution::class, 'worksheet_id');
+    }
+
+    public function classrooms()
+    {
+        return $this->belongsToMany(Classroom::class, 'class_worksheets')->withPivot('acces_code', 'password')->withTimestamps();
     }
 }

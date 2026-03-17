@@ -16,15 +16,12 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('subject_id');
-            $table->unsignedBigInteger('classroom_id');
 
             $table->integer('lifetime_minutes');
             $table->integer('max_time_to_resolve_minutes');
 
             $table->boolean('is_public');
-            $table->string('password')->nullable();
-            $table->string('link')->nullable(); // just for test
-            $table->string('grade')->nullable();
+            $table->string('max_points')->nullable();
 
             $table->timestamps();
         });

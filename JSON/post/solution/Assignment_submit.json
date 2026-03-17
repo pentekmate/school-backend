@@ -18,6 +18,19 @@
                             "answer_id":1
                         }
                     ]
+                },
+                             {
+                    "img_id": 2,
+                    "answers":[
+                        {
+                            "coordinate_id":2,
+                            "answer_id":4
+                        },
+                        {
+                            "coordinate_id":3,
+                            "answer_id":5
+                        }
+                    ]
                 }
             ]
         }

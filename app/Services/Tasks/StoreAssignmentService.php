@@ -14,9 +14,7 @@ class StoreAssignmentService
 
     public function store(Task $task, array $taskData)
     {
-        $assignmentTask = $task->task_assignment()->create([
-            'feedback' => $taskData['feedback'],
-        ]);
+        $assignmentTask = $task->task_assignment()->create();
         $imagePathForAssignment = $taskData['assignment']['image'];
         // $imagePathForAssignment = null;
         // if (! empty($taskData['assignment']['image'])) {
@@ -31,7 +29,7 @@ class StoreAssignmentService
         // }
 
         $assignmentImage = $assignmentTask->image()->create([
-            'imageURL' => $imagePathForAssignment,
+            'imgURL' => $imagePathForAssignment,
         ]);
 
         foreach ($taskData['assignment']['coordinatesAndAnswers'] as $item) {

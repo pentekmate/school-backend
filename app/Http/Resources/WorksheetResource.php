@@ -18,11 +18,10 @@ class WorksheetResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'subject_id' => $this->subject_id,
-            'classroom_id' => $this->classroom_id,
             'lifetime_minutes' => $this->lifetime_minutes,
             'max_time_to_resolve_minutes' => $this->max_time_to_resolve_minutes,
             'is_public' => $this->is_public,
-            'grade' => $this->grade,
+            'max_points' => $this->max_points,
             'tasks' => TaskResource::collection($this->tasks),
         ];
     }

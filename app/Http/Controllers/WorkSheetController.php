@@ -11,7 +11,9 @@ use App\Services\Tasks\StoreGroupingTaskService;
 use App\Services\Tasks\StorePairingTaskService;
 use App\Services\Tasks\StoreShortAnswerService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class WorkSheetController extends Controller
 {
@@ -45,14 +47,26 @@ class WorkSheetController extends Controller
 
             $worksheet = Worksheet::create([
                 'title' => $request->title,
-                'user_id' => 1,
-                'subject_id' => 1,
-                'classroom_id' => 1,
+                'user_id' => $request->user_id,
+                'subject_id' => $request->subject_id,
                 'lifetime_minutes' => 60,
                 'max_time_to_resolve_minutes' => 45,
-                'grade' => 1,
-                'is_public' => 0,
+                'max_points' => $request->max_points,
+                'is_public' => $request->is_public,
             ]);
+
+            if ($request->has('assignments') && is_array($request->assignments)) {
+
+                $classroomsData = [];
+                foreach ($request->assignments as $assignment) {
+                    $classroomsData[$assignment['classroom_id']] = [
+                        'access_code' => Str::random(8),
+                        'password' => $assignment['password'],
+                    ];
+                }
+
+                $worksheet->classrooms()->sync($classroomsData);
+            }
 
             foreach ($request->tasks as $taskData) {
 
@@ -91,7 +105,6 @@ class WorkSheetController extends Controller
             ->where('student_id', $studentId)
             ->first();
 
-        // Beleerőszakoljuk a requestbe, így a TaskResultResource látni fogja!
         request()->merge(['current_solution_id' => $solution->id ?? null]);
 
         return new WorksheetResultResource($worksheet);
@@ -100,9 +113,26 @@ class WorkSheetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        //
+        $token = $request->header('X-Worksheet-Token');
+        $session = Cache::get('active_session_'.$token);
+
+        if (! $session || $session['worksheet_id'] != $id) {
+            return response()->json(['message' => 'Nincs jogosultságod a feladatlaphoz!'], 403);
+        }
+
+       
+        $worksheet = Worksheet::with([
+            'tasks.task_type',
+            'tasks.task_grouping.groups.items',
+            'tasks.task_pair',
+            'tasks.task_shortAnswer.questions.answer',
+            'tasks.task_assignment.image.assignmentCoordinates.assignmentAnswers',
+        ])->findOrFail($id);
+
+        return new WorksheetResource($worksheet);
+
     }
 
     /**

@@ -32,6 +32,45 @@
                     }
                 ]
             }
+        },
+        {
+            "task_title": "Állatok csoportosítása",
+            "task_description": "Húzd a megfelelő csoportba",
+            "feedback": "ezazzzz",
+            "task_type_id": 4,
+            "assignment": {
+                "image": "https://picsum.photos/640/480?random=1",
+                "coordinatesAndAnswers": [
+                    {
+                        "coordinate": "225,333",
+                        "answers": [
+                            {
+                                "answer":"bb",
+                                "isCorrect":true
+                            },
+                            {
+                                "answer":"bb",
+                                "isCorrect":false
+                            }
+ 
+                        ]
+                    },
+                     {
+                        "coordinate": "2,1",
+                        "answers": [
+                            {
+                                "answer":"bb",
+                                "isCorrect":true
+                            },
+                            {
+                                "answer":"bb",
+                                "isCorrect":false
+                            }
+ 
+                        ]
+                    }
+                ]
+            }
         }
     ]
 }

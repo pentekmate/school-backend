@@ -14,9 +14,7 @@ class StoreGroupingTaskService
 
     public function store(Task $task, array $taskData): void
     {
-        $grouping = $task->task_grouping()->create([
-            'feedback' => $taskData['feedback'] ?? null,
-        ]);
+        $grouping = $task->task_grouping()->create();
 
         foreach ($taskData['grouping']['groups'] ?? [] as $groupData) {
 

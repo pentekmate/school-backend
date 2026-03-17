@@ -14,9 +14,7 @@ class StorePairingTaskService
 
     public function store(Task $task, array $taskData)
     {
-        $pairing = $task->task_pair()->create([
-            'feedback' => $taskData['feedback'],
-        ]);
+        $pairing = $task->task_pair()->create();
 
         foreach ($taskData['pairing']['pairing_groups'] as $groupData) {
 

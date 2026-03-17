@@ -28,11 +28,14 @@ class StoreWorksheetRequest extends FormRequest
 
             'user_id' => 'required|integer|exists:users,id',
             'subject_id' => 'required|integer|exists:subjects,id',
-            'classroom_id' => 'required|integer|exists:classrooms,id',
+
+            'assignments' => 'required|array|min:1',
+            'assignments.*.classroom_id' => 'required|integer|exists:classrooms,id',
+            'assignments.*.password' => 'required|string|min:4|max:8',
 
             'lifetime_minutes' => 'required|integer|min:1',
             'max_time_to_resolve_minutes' => 'required|integer|min:1',
-            'grade' => 'required|integer|min:1|max:12',
+            'max_points' => 'required|integer|min:1|max:100',
             'is_public' => 'required|boolean',
 
             'tasks' => 'required|array|min:1',
@@ -40,7 +43,6 @@ class StoreWorksheetRequest extends FormRequest
             'tasks.*.task_title' => 'required|string|max:255',
             'tasks.*.task_description' => 'nullable|string',
             'tasks.*.task_type_id' => 'required|integer|exists:task_types,id',
-            'tasks.*.feedback' => 'nullable|string',
 
         ];
     }

@@ -81,7 +81,7 @@ class SubmitWorksheetRequest extends FormRequest
             ->where('task_groupings.task_id', $submittedTaskId)
             ->count();
         if (count($groups) !== $validGroupCount) {
-            $validator->errors()->add('Hibás adatok', $path);
+            $validator->errors()->add($path, 'Hibás adatok');
 
             return;
         }
