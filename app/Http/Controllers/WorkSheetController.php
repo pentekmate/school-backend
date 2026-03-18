@@ -122,7 +122,6 @@ class WorkSheetController extends Controller
             return response()->json(['message' => 'Nincs jogosultságod a feladatlaphoz!'], 403);
         }
 
-       
         $worksheet = Worksheet::with([
             'tasks.task_type',
             'tasks.task_grouping.groups.items',

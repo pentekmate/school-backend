@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TaskSubmitController;
 use App\Http\Controllers\WorksheetAccesController;
 use App\Http\Controllers\WorksheetController;
@@ -14,3 +15,10 @@ Route::get('/worksheet/{worksheetId}/userAnswer/{studentId}', [WorksheetControll
 
 Route::post('/verify-access', [WorksheetAccesController::class, 'verifyAcces']);
 Route::post('/start-solving', [WorksheetAccesController::class, 'startSolving']);
+
+// students
+Route::get('/students/{classroom_id}/{user_id}', [StudentController::class, 'index']);
+Route::post('/students/delete', [StudentController::class, 'destroy']);
+Route::post('/students/bulk-upload', [StudentController::class, 'bulkUpload']);
+Route::post('/students/upload', [StudentController::class, 'store']);
+

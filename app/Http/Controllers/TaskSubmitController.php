@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SubmitWorksheetRequest;
 use App\Models\Worksheet_solution;
+use Illuminate\Support\Facades\Cache;
 
 class TaskSubmitController extends Controller
 {
     public function submit(SubmitWorksheetRequest $request)
     {
 
+        $token = $request->header('X-Worksheet-Token');
+        $session = Cache::get('active_session_'.$token);
+
+        if (! $session) {
+            return response()->json(['message' => 'Lejárt munkamenet!'], 403);
+        }
+
         $worksheetSolution = Worksheet_solution::create([
-            'worksheet_id' => $request['worksheet_id'],
-            'student_id' => $request['student_id'],
+            'worksheet_id' => $session['worksheet_id'],
+            'student_id' => $session['student_id'],
             'score' => 0,
         ]);
 
@@ -40,6 +48,8 @@ class TaskSubmitController extends Controller
         }
 
         $worksheetSolution->update(['score' => $totalScore]);
+
+        Cache::forget('active_session_'.$token);
 
         return response()->json([
             'message' => 'Sikeres mentés!',
