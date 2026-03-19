@@ -44,6 +44,7 @@ class StudentSeeder extends Seeder
             ['id' => 28, 'name' => 'Kerekes Enikő', 'classroom_id' => 2],
             ['id' => 29, 'name' => 'Major Barnabás', 'classroom_id' => 2],
             ['id' => 30, 'name' => 'Balla Fanni', 'classroom_id' => 2],
+            ['id' => 31, 'name' => 'Balla Fanni', 'classroom_id' => 6],
         ]);
     }
 }

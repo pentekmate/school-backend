@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 
 class StoreWorksheetRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreWorksheetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -26,11 +27,17 @@ class StoreWorksheetRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
 
-            'user_id' => 'required|integer|exists:users,id',
             'subject_id' => 'required|integer|exists:subjects,id',
 
             'assignments' => 'required|array|min:1',
-            'assignments.*.classroom_id' => 'required|integer|exists:classrooms,id',
+            'assignments.*.classroom_id' => [
+                'required',
+                'integer',
+                // Ellenőrizzük, hogy létezik-e az osztály ÉS a tanáré-e
+                \Illuminate\Validation\Rule::exists('classrooms', 'id')->where(function ($query) {
+                    $query->where('user_id', Auth::id());
+                }),
+            ],
             'assignments.*.password' => 'required|string|min:4|max:8',
 
             'lifetime_minutes' => 'required|integer|min:1',
@@ -51,7 +58,7 @@ class StoreWorksheetRequest extends FormRequest
     {
         return [
             'title.required' => 'A feladatlap cím megadása kötelező.',
-
+            'assignments.*.classroom_id.exists' => 'Az egyik kiválasztott osztály nem létezik, vagy nincs jogosultságod hozzá.',
             'tasks.required' => 'Legalább egy feladatot hozzá kell adni.',
 
             'tasks.*.task_title.required' => 'Minden feladatnak kell címet adni.',

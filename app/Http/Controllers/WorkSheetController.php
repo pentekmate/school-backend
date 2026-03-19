@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreWorksheetRequest;
 use App\Http\Resources\WorksheetResource;
 use App\Http\Resources\WorksheetResultResource;
+use App\Models\Student;
 use App\Models\Worksheet;
 use App\Services\Tasks\StoreAssignmentService;
 use App\Services\Tasks\StoreGroupingTaskService;
 use App\Services\Tasks\StorePairingTaskService;
 use App\Services\Tasks\StoreShortAnswerService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -20,17 +22,17 @@ class WorkSheetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $worksheets = Worksheet::with([
-            'tasks.task_type',
-            'tasks.task_grouping.groups.items',
-            'tasks.task_pair',
-            'tasks.task_shortAnswer.questions.answer',
-            'tasks.task_assignment.image.assignmentCoordinates.assignmentAnswers',
-        ])->get();
+        $user = $request->user();
+        if (! $user) {
+            return response()->json(['message' => 'Bejelentkezés szükséges.'], 401);
+        }
+        $worksheets = Worksheet::where('user_id', $user->id)->get(['title', 'id']);
 
-        return WorksheetResource::collection($worksheets);
+        return response()->json([
+            'Worksheets' => $worksheets,
+        ]);
     }
 
     /**
@@ -47,7 +49,7 @@ class WorkSheetController extends Controller
 
             $worksheet = Worksheet::create([
                 'title' => $request->title,
-                'user_id' => $request->user_id,
+                'user_id' => Auth::id(),
                 'subject_id' => $request->subject_id,
                 'lifetime_minutes' => 60,
                 'max_time_to_resolve_minutes' => 45,
@@ -99,7 +101,16 @@ class WorkSheetController extends Controller
 
     public function userAnswer($worksheetId, $studentId)
     {
+
         $worksheet = Worksheet::with('tasks')->findOrFail($worksheetId);
+        $student = Student::findOrFail($studentId);
+
+        if ($student->classroom->user_id != Auth::id()) {
+            return response()->json([
+                'message' => 'Nincs jogod ehhez a művelethez!',
+            ], 403);
+        }
+
         $solution = DB::table('worksheet_solutions')
             ->where('worksheet_id', $worksheetId)
             ->where('student_id', $studentId)
@@ -113,6 +124,8 @@ class WorkSheetController extends Controller
     /**
      * Display the specified resource.
      */
+
+    // diakoldalon a show funkcio ami elkuldi a feladatlapot az adott diáknak
     public function show(Request $request, string $id)
     {
         $token = $request->header('X-Worksheet-Token');

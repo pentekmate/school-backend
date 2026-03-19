@@ -23,24 +23,20 @@ class StudentUpload extends FormRequest
     {
         return [
             'classroom_id' => 'required|exists:classrooms,id',
-            'user_id' => 'required',
-            'name'=>'required|string|max:30'
+            'name' => 'required|string|max:30',
         ];
     }
 
-
-     public function messages(): array
+    public function messages(): array
     {
         return [
-            'name.required'=>'A diák nevét kötelező megadni.',
+            'name.required' => 'A diák nevét kötelező megadni.',
 
-            'name.string'=>'A diák nevének típusa nem megfelelő.',
+            'name.string' => 'A diák nevének típusa nem megfelelő.',
 
-            'name.max:30'=>'A diák neve túl hosszú',
+            'name.max:30' => 'A diák neve túl hosszú',
 
             'classroom_id.required' => 'Hiányzó adatok.',
-
-            'user_id' => 'Hiányzó adatok.',
         ];
     }
 }

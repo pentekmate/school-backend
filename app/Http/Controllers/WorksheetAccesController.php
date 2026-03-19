@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Worksheet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class WorksheetAccesController extends Controller
 {
+    // megnezi hogy egy diak hozzaferhet -e egy adott feladatlahoz, ha igen megkapja a diakok listajat
     public function verifyAcces(Request $request)
     {
 
@@ -45,12 +47,40 @@ class WorksheetAccesController extends Controller
             'worksheet_id' => 'required|exists:worksheets,id',
         ]);
 
+      
+        $alreadyFinished = DB::table('worksheet_solutions')
+            ->where('student_id', $request->student_id)
+            ->where('worksheet_id', $request->worksheet_id)
+            ->exists();
+
+        if ($alreadyFinished) {
+            return response()->json(['message' => 'Már egyszer kitöltötted!'], 403);
+        }
+
+       
+        $sessionKey = "active_solver_{$request->student_id}_{$request->worksheet_id}";
+
+        if (Cache::has($sessionKey)) {
+            return response()->json([
+                'success' => true,
+                'token' => Cache::get($sessionKey),
+                'message' => 'Folyamatban lévő munkamenet folytatása.',
+            ]);
+        }
+
+    
         $tempToken = bin2hex(random_bytes(16));
 
+       
+        $worksheet = Worksheet::find($request->worksheet_id);
+        $expireAt = now()->addMinutes($worksheet->max_time_to_resolve_minutes ?? 60);
+
+        
+        Cache::put($sessionKey, $tempToken, $expireAt);
         Cache::put('active_session_'.$tempToken, [
             'student_id' => $request->student_id,
             'worksheet_id' => $request->worksheet_id,
-        ], now()->addHours(2));
+        ], $expireAt);
 
         return response()->json([
             'success' => true,
@@ -58,3 +88,5 @@ class WorksheetAccesController extends Controller
         ]);
     }
 }
+
+// DIÁK HOZZÁFÉRHETŐSÉGE A FELADATLAP KITOLTESHEZ

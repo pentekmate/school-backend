@@ -19,6 +19,7 @@ class ClassRoomSeeder extends Seeder
                 ['id' => 3, 'user_id' => 2, 'name' => '6.c'],
                 ['id' => 4, 'user_id' => 2, 'name' => '1.c'],
                 ['id' => 5, 'user_id' => 3, 'name' => '2.c'],
+                ['id' => 6, 'user_id' => 4, 'name' => '2.c'],
 
             ]);
     }

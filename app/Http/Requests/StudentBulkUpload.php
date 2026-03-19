@@ -24,7 +24,6 @@ class StudentBulkUpload extends FormRequest
         return [
             'file' => 'required|mimes:xlsx,xls,csv|max:2048',
             'classroom_id' => 'required|exists:classrooms,id',
-            'user_id' => 'required',
         ];
 
     }
@@ -37,8 +36,6 @@ class StudentBulkUpload extends FormRequest
             'file.mimes:xlsx,xls,csv' => 'A fájl típus nem megfelelő.',
 
             'classroom_id.required' => 'Hiányzó adatok.',
-
-            'user_id' => 'Hiányzó adatok.',
         ];
     }
 }
