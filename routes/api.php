@@ -8,7 +8,6 @@ use App\Http\Controllers\TaskSubmitController;
 use App\Http\Controllers\WorksheetAccesController;
 use App\Http\Controllers\WorksheetController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 // Route::post('/worksheets/{id}',WorksheetController::class)->only(['show']);
 
@@ -36,13 +35,3 @@ Route::apiResource('worksheets', WorksheetController::class)
     ->only(['show']);
 // auth
 Route::post('/login', [AuthController::class, 'login']);
-
-
-Route::get('/debug-file', function () {
-    $path = 'temp/9d0dd343-c550-4d80-a4d2-bd07bb53b18e.png';
-    return [
-        'exists_on_disk' => Storage::disk('public')->exists($path),
-        'full_path' => storage_path('app/public/' . $path),
-        'is_readable' => is_readable(storage_path('app/public/' . $path)),
-    ];
-});

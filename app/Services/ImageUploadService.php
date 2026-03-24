@@ -15,7 +15,7 @@ class ImageUploadService
     {
         if (str_starts_with($tempPath, 'temp/')) {
             $fileName = basename($tempPath);
-            $finalPath = "group-items/original/$fileName";
+            $finalPath = "/$fileName";
 
             if (Storage::disk('public')->exists($tempPath)) {
                 Storage::disk('public')->move($tempPath, $finalPath);

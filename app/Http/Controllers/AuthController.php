@@ -16,6 +16,10 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+        ], [
+            'email.required' => 'Az e-mail cím megadása kötelező.',
+            'email.email' => 'Kérjük, érvényes e-mail címet adj meg.',
+            'password.required' => 'A jelszó megadása kötelező.',
         ]);
 
         $user = User::where('email', $request->email)->first();
