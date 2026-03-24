@@ -1,25 +1,37 @@
 {
-  "title": "Csoportosítós feladatlap",
-  "user_id":1,
-  "classroom_id":1,
-  "tasks": [
-    {
-      "task_title": "Állatok csoportosítása",
-      "task_description": "Húzd a megfelelő csoportba",
-      "feedback":"ezazzzz",
-      "task_type_id": 1,
-      "grouping": {
-        "groups": [
-          {
-            "name": "Emlősök",
-            "items": [
-              { "name": "Kutya" },
-              { "image": "base64IMG" }
-            ]
-          }
-
-        ]
-      }
-    }
-  ]
+    "title": "Csoportosítós feladatlap",
+    "assignments": [
+        {
+            "classroom_id": 7,
+            "password": "körte123"
+        }
+    ],
+    "subject_id": 1,
+    "lifetime_minutes": 60,
+    "max_time_to_resolve_minutes": 45,
+    "max_points": 1,
+    "is_public": 0,
+    "tasks": [
+        {
+            "task_title": "Állatok csoportosítása",
+            "task_description": "Húzd a megfelelő csoportba",
+            "feedback": "ezazzzz",
+            "task_type_id": 1,
+            "grouping": {
+                "groups": [
+                    {
+                        "name": "Emlősök",
+                        "items": [
+                            {
+                                "name": "Kutya"
+                            },
+                            {
+                                "image":"temp/f7538635-a590-4623-a317-bfbe4122fc14.png"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
 }

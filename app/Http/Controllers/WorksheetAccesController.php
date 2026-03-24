@@ -47,7 +47,6 @@ class WorksheetAccesController extends Controller
             'worksheet_id' => 'required|exists:worksheets,id',
         ]);
 
-      
         $alreadyFinished = DB::table('worksheet_solutions')
             ->where('student_id', $request->student_id)
             ->where('worksheet_id', $request->worksheet_id)
@@ -57,7 +56,6 @@ class WorksheetAccesController extends Controller
             return response()->json(['message' => 'Már egyszer kitöltötted!'], 403);
         }
 
-       
         $sessionKey = "active_solver_{$request->student_id}_{$request->worksheet_id}";
 
         if (Cache::has($sessionKey)) {
@@ -68,14 +66,11 @@ class WorksheetAccesController extends Controller
             ]);
         }
 
-    
         $tempToken = bin2hex(random_bytes(16));
 
-       
         $worksheet = Worksheet::find($request->worksheet_id);
         $expireAt = now()->addMinutes($worksheet->max_time_to_resolve_minutes ?? 60);
 
-        
         Cache::put($sessionKey, $tempToken, $expireAt);
         Cache::put('active_session_'.$tempToken, [
             'student_id' => $request->student_id,

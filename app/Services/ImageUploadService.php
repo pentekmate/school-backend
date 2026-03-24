@@ -4,14 +4,33 @@ namespace App\Services;
 
 use App\Jobs\ProcessImage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ImageUploadService
 {
-    // Eredeti fájl feltöltés
+    /**
+     * Átmozgatja a temp mappából a végleges helyre és elindítja a feldolgozást.
+     */
+    public function finalizeTempImage(string $tempPath): string
+    {
+        if (str_starts_with($tempPath, 'temp/')) {
+            $fileName = basename($tempPath);
+            $finalPath = "group-items/original/$fileName";
+
+            if (Storage::disk('public')->exists($tempPath)) {
+                Storage::disk('public')->move($tempPath, $finalPath);
+                ProcessImage::dispatch($finalPath);
+
+                return $finalPath;
+            }
+        }
+
+        return $tempPath;
+    }
+
     public function store(UploadedFile $file): string
     {
         $path = $file->store('group-items/original', 'public');
-
         ProcessImage::dispatch($path);
 
         return $path;
@@ -32,15 +51,8 @@ class ImageUploadService
 
         $filename = uniqid('img_').'.'.$extension;
         $path = "group-items/original/$filename";
-        $fullPath = storage_path("app/public/$path");
 
-        // Mappa létrehozása, ha nem létezik
-        if (! file_exists(dirname($fullPath))) {
-            mkdir(dirname($fullPath), 0755, true);
-        }
-
-        file_put_contents($fullPath, $decoded);
-
+        Storage::disk('public')->put($path, $decoded);
         ProcessImage::dispatch($path);
 
         return $path;

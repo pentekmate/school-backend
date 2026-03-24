@@ -24,24 +24,40 @@ class StoreGroupingTaskService
 
             foreach ($groupData['items'] ?? [] as $itemData) {
 
-                $imagePath = null;
-
-                if (! empty($itemData['image'])) {
-
-                    if ($itemData['image'] instanceof UploadedFile) {
-
-                        $imagePath = $this->imageUploadService->store($itemData['image']);
-                    } elseif (is_string($itemData['image']) && str_starts_with($itemData['image'], 'data:image')) {
-
-                        $imagePath = $this->imageUploadService->storeBase64($itemData['image']);
-                    }
-                }
+                // Itt hívjuk meg az új logikát
+                $imagePath = $this->resolveImagePath($itemData['image'] ?? null);
 
                 $group->items()->create([
                     'name' => $itemData['name'] ?? null,
-                    'imgUrl' => $imagePath,
+                    'imgURL' => $imagePath,
                 ]);
             }
         }
+    }
+
+    /**
+     * Egységes képkezelő logika (Async, Base64, UploadedFile, Meglévő)
+     */
+    private function resolveImagePath($input): ?string
+    {
+        if (empty($input)) {
+            return null;
+        }
+        if ($input instanceof UploadedFile) {
+            return $this->imageUploadService->store($input);
+        }
+
+        if (is_string($input)) {
+            if (str_starts_with($input, 'data:image')) {
+                return $this->imageUploadService->storeBase64($input);
+            }
+            if (str_starts_with($input, 'temp/')) {
+                return $this->imageUploadService->finalizeTempImage($input);
+            }
+
+            return $input; // Meglévő URL
+        }
+
+        return null;
     }
 }

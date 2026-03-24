@@ -15,18 +15,9 @@ class StoreAssignmentService
     public function store(Task $task, array $taskData)
     {
         $assignmentTask = $task->task_assignment()->create();
-        $imagePathForAssignment = $taskData['assignment']['image'];
-        // $imagePathForAssignment = null;
-        // if (! empty($taskData['assignment']['image'])) {
 
-        //     if ($taskData['assignment']['image'] instanceof UploadedFile) {
-
-        //         $imagePathForAssignment = $this->imageUploadService->store($taskData['assignment']['image']);
-        //     } elseif (is_string($taskData['assignment']['image']) && str_starts_with($taskData['assignment']['image'], 'data:image')) {
-
-        //         $imagePathForAssignment = $this->imageUploadService->storeBase64($taskData['assignment']['image']);
-        //     }
-        // }
+        // Az új, egységes képfeloldó logika hívása
+        $imagePathForAssignment = $this->resolveImagePath($taskData['assignment']['image'] ?? null);
 
         $assignmentImage = $assignmentTask->image()->create([
             'imgURL' => $imagePathForAssignment,
@@ -46,5 +37,31 @@ class StoreAssignmentService
                 ]);
             }
         }
+    }
+
+    /**
+     * Egységes képkezelő logika (Async, Base64, UploadedFile, Meglévő)
+     */
+    private function resolveImagePath($input): ?string
+    {
+        if (empty($input)) {
+            return null;
+        }
+        if ($input instanceof UploadedFile) {
+            return $this->imageUploadService->store($input);
+        }
+
+        if (is_string($input)) {
+            if (str_starts_with($input, 'data:image')) {
+                return $this->imageUploadService->storeBase64($input);
+            }
+            if (str_starts_with($input, 'temp/')) {
+                return $this->imageUploadService->finalizeTempImage($input);
+            }
+
+            return $input; // Meglévő URL
+        }
+
+        return null;
     }
 }

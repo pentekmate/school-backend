@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class StoreWorksheetRequest extends FormRequest
 {
@@ -80,136 +81,96 @@ class StoreWorksheetRequest extends FormRequest
 
     private function validatePairing($validator, $task, $index)
     {
-        if (count($task['pairing']['pairing_groups'] ?? []) > 8) {
-            $validator->errors()->add(
-                "tasks.$index.pairing.pairing_groups",
-                'Maximum 8 párt alkothatsz.'
-            );
+        $groups = $task['pairing']['pairing_groups'] ?? [];
+
+        if (count($groups) > 8) {
+            $validator->errors()->add("tasks.$index.pairing.pairing_groups", 'Maximum 8 párt alkothatsz.');
 
             return;
         }
 
-        if (empty($task['pairing']['pairing_groups'])) {
-            $validator->errors()->add(
-                "tasks.$index.pairing.pairing_groups",
-                'Legalább egy pár megadása kötelező.'
-            );
+        if (empty($groups)) {
+            $validator->errors()->add("tasks.$index.pairing.pairing_groups", 'Legalább egy pár megadása kötelező.');
 
             return;
         }
 
-        foreach ($task['pairing']['pairing_groups'] as $gIndex => $group) {
-
+        foreach ($groups as $gIndex => $group) {
             $pairQuestion = $group['pair_question'] ?? null;
             $pairQuestionImage = $group['pair_question_image'] ?? null;
 
             $hasPairQuestion = ! empty($pairQuestion);
-            $hasPairQuestionImage = ! empty($pairQuestionImage) && (is_string($pairQuestionImage) || $pairQuestionImage instanceof \Illuminate\Http\UploadedFile);
+            // String alapú ellenőrzés az async elérési úthoz
+            $hasPairQuestionImage = ! empty($pairQuestionImage) && is_string($pairQuestionImage);
 
             $pairAnswer = $group['pair_answer'] ?? null;
             $pairAnswerImage = $group['pair_answer_image'] ?? null;
 
             $hasPairAnswer = ! empty($pairAnswer);
-            $hasPairAnswerImage = ! empty($pairAnswerImage) && (is_string($pairAnswerImage) || $pairAnswerImage instanceof \Illuminate\Http\UploadedFile);
+            $hasPairAnswerImage = ! empty($pairAnswerImage) && is_string($pairAnswerImage);
 
+            // 1. Logikai validáció: Kérdés oldal
             if (! $hasPairQuestion && ! $hasPairQuestionImage) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'A párosításhoz meg kell adni vagy egy kérdés szöveget, vagy egy képet.'
-                );
+                $validator->errors()->add("tasks.$index.pairing.pairing_groups.$gIndex", 'A párosításhoz meg kell adni vagy egy kérdés szöveget, vagy egy képet.');
             }
 
             if ($hasPairQuestion && $hasPairQuestionImage) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'Nem adhatsz meg egyszerre kérdés szöveget és képet.'
-                );
+                $validator->errors()->add("tasks.$index.pairing.pairing_groups.$gIndex", 'Nem adhatsz meg egyszerre kérdés szöveget és képet.');
             }
 
+            // 2. Logikai validáció: Válasz oldal
             if (! $hasPairAnswer && ! $hasPairAnswerImage) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'A párosításhoz meg kell adni vagy egy válasz szöveget, vagy egy képet.'
-                );
+                $validator->errors()->add("tasks.$index.pairing.pairing_groups.$gIndex", 'A párosításhoz meg kell adni vagy egy válasz szöveget, vagy egy képet.');
             }
 
             if ($hasPairAnswer && $hasPairAnswerImage) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'Nem adhatsz meg egyszerre válasz szöveget és képet.'
-                );
+                $validator->errors()->add("tasks.$index.pairing.pairing_groups.$gIndex", 'Nem adhatsz meg egyszerre válasz szöveget és képet.');
             }
 
+            // 3. Összefüggés: Ha van kérdés, kell válasz is
             if (($hasPairQuestion || $hasPairQuestionImage) && (! $hasPairAnswerImage && ! $hasPairAnswer)) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'Ha van kérdés, kötelező választ is megadni.'
-                );
+                $validator->errors()->add("tasks.$index.pairing.pairing_groups.$gIndex", 'Ha van kérdés, kötelező választ is megadni.');
             }
+
+            // 4. Szöveges mezők validálása
             if ($hasPairQuestion) {
-                $this->validateStringField(
-                    $validator,
-                    $group['pair_question'] ?? null,
-                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
-                    'A kérdés kötelező szöveg.'
-                );
-
-                if (strlen($group['pair_question']) > 130) {
-                    $validator->errors()->add(
-                        "tasks.$index.pairing.pairing_groups.$gIndex.pair_question",
-                        'A kérdés nem lehet hosszabb, mint 130 karakter.'
-                    );
+                if (strlen($pairQuestion) > 130) {
+                    $validator->errors()->add("tasks.$index.pairing.pairing_groups.$gIndex.pair_question", 'A kérdés nem lehet hosszabb, mint 130 karakter.');
                 }
             }
+
             if ($hasPairAnswer) {
-                $this->validateStringField(
-                    $validator,
-                    $group['pair_answer'] ?? null,
-                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
-                    'A válasz kötelező szöveg.'
-                );
-
-                if (strlen($group['pair_answer']) > 130) {
-                    $validator->errors()->add(
-                        "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer",
-                        'A válasz nem lehet hosszabb, mint 130 karakter.'
-                    );
+                if (strlen($pairAnswer) > 130) {
+                    $validator->errors()->add("tasks.$index.pairing.pairing_groups.$gIndex.pair_answer", 'A válasz nem lehet hosszabb, mint 130 karakter.');
                 }
             }
 
+            // 5. Kép elérési utak validálása a segédfüggvénnyel
             if ($hasPairQuestionImage) {
-
-                $this->validateIMG(
-                    $validator,
-                    $pairQuestionImage,
-                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_question_image");
-
+                $this->validateImagePath($validator, $pairQuestionImage, "tasks.$index.pairing.pairing_groups.$gIndex.pair_question_image");
             }
 
             if ($hasPairAnswerImage) {
-
-                $this->validateIMG(
-                    $validator,
-                    $pairAnswerImage,
-                    "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer_image");
-
+                $this->validateImagePath($validator, $pairAnswerImage, "tasks.$index.pairing.pairing_groups.$gIndex.pair_answer_image");
             }
-
         }
     }
 
     private function validateGrouping($validator, $task, $index)
     {
-        if (count($task['grouping']['groups'] ?? []) > 4) {
+        $groups = $task['grouping']['groups'] ?? [];
+
+        // Csoportok számának ellenőrzése (javítottam a hibaüzenetet is a logikádhoz)
+        if (count($groups) > 4) {
             $validator->errors()->add(
                 "tasks.$index.grouping.groups",
-                'Maximum 3 csoportot alkothatsz.'
+                'Maximum 4 csoportot alkothatsz.'
             );
 
             return;
         }
 
-        if (empty($task['grouping']['groups'])) {
+        if (empty($groups)) {
             $validator->errors()->add(
                 "tasks.$index.grouping.groups",
                 'Legalább egy csoport megadása kötelező.'
@@ -218,42 +179,35 @@ class StoreWorksheetRequest extends FormRequest
             return;
         }
 
-        foreach ($task['grouping']['groups'] as $gIndex => $group) {
-            $this->validateStringField(
-                $validator,
-                $group['name'] ?? null,
-                "tasks.$index.grouping.groups.$gIndex.name",
-                'A név kötelező szöveg'
-            );
+        foreach ($groups as $gIndex => $group) {
+            $groupName = $group['name'] ?? null;
 
-            if (strlen($group['name'] ?? null) > 30) {
-                $validator->errors()->add(
-                    "tasks.$index.grouping.groups.$gIndex.name",
-                    'A megadott csoportnév túlhosszú.'
-                );
+            // Csoport név ellenőrzése
+            if (empty($groupName)) {
+                $validator->errors()->add("tasks.$index.grouping.groups.$gIndex.name", 'A név kötelező szöveg');
+            } elseif (strlen($groupName) > 30) {
+                $validator->errors()->add("tasks.$index.grouping.groups.$gIndex.name", 'A megadott csoportnév túl hosszú.');
             }
 
-            if (count($group['items']) > 4) {
-                $validator->errors()->add(
-                    "tasks.$index.grouping.groups.$gIndex.items",
-                    'Maximum 5 elem lehet egy csoportban.'
-                );
+            $items = $group['items'] ?? [];
+
+            // Csoport elemek számának ellenőrzése
+            if (count($items) > 5) {
+                $validator->errors()->add("tasks.$index.grouping.groups.$gIndex.items", 'Maximum 5 elem lehet egy csoportban.');
             }
-            if (empty($group['items'])) {
-                $validator->errors()->add(
-                    "tasks.$index.grouping.groups.$gIndex.items",
-                    'Üres csoportot nem hozhatsz létre.'
-                );
+            if (empty($items)) {
+                $validator->errors()->add("tasks.$index.grouping.groups.$gIndex.items", 'Üres csoportot nem hozhatsz létre.');
             }
 
-            foreach ($group['items'] as $gItemIndex => $groupItem) {
-
+            foreach ($items as $gItemIndex => $groupItem) {
                 $name = $groupItem['name'] ?? null;
                 $image = $groupItem['image'] ?? null;
 
                 $hasName = ! empty($name);
-                $hasImage = ! empty($image) && (is_string($image) || $image instanceof \Illuminate\Http\UploadedFile);
+                // String alapú ellenőrzés (temp/ vagy meglévő path)
+                $hasImage = ! empty($image) && is_string($image);
 
+                // 1. Logikai ellenőrzés: Név VAGY kép
                 if (! $hasName && ! $hasImage) {
                     $validator->errors()->add(
                         "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex",
@@ -272,24 +226,21 @@ class StoreWorksheetRequest extends FormRequest
                     continue;
                 }
 
-                if ($hasName) {
-                    $this->validateStringField(
-                        $validator,
-                        $name,
+                // 2. Név hossza
+                if ($hasName && strlen($name) > 30) {
+                    $validator->errors()->add(
                         "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex.name",
-                        'A csoport elem neve kötelező szöveg.'
+                        'A csoport elem nem lehet hosszabb 30 karakternél.'
                     );
-
-                    if (strlen($name) > 30) {
-                        $validator->errors()->add(
-                            "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex.name",
-                            'A csoport elem nem lehet hosszabb 30 karakternél.'
-                        );
-                    }
                 }
 
+                // 3. Kép elérési út validálása
                 if ($hasImage) {
-                    $this->validateIMG($validator, $image, "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex.image");
+                    $this->validateImagePath(
+                        $validator,
+                        $image,
+                        "tasks.$index.grouping.groups.$gIndex.items.$gItemIndex.image"
+                    );
                 }
             }
         }
@@ -297,193 +248,154 @@ class StoreWorksheetRequest extends FormRequest
 
     private function validateShortAnswer($validator, $task, $index)
     {
-        if (count($task['short_answer']['questions'] ?? []) > 18) {
-            $validator->errors()->add(
-                "tasks.$index.short_answer.questions",
-                'Maximum 18 kérdést alkothatsz.'
-            );
+        $questions = $task['short_answer']['questions'] ?? [];
+
+        if (count($questions) > 18) {
+            $validator->errors()->add("tasks.$index.short_answer.questions", 'Maximum 18 kérdést alkothatsz.');
 
             return;
         }
 
-        if (empty($task['short_answer']['questions'])) {
-            $validator->errors()->add(
-                "tasks.$index.short_answer.questions",
-                'Legalább egy kérdés megadása kötelező.'
-            );
+        if (empty($questions)) {
+            $validator->errors()->add("tasks.$index.short_answer.questions", 'Legalább egy kérdés megadása kötelező.');
 
             return;
         }
 
-        foreach ($task['short_answer']['questions'] as $gIndex => $shortAnswer) {
+        foreach ($questions as $gIndex => $shortAnswer) {
             $shortAnswerQuestion = $shortAnswer['question'] ?? null;
             $shortAnswerQuestionImage = $shortAnswer['question_image'] ?? null;
 
             $hasQuestion = ! empty($shortAnswerQuestion);
-            $hasQuestionImage = ! empty($shortAnswerQuestionImage) && (is_string($shortAnswerQuestionImage) || $shortAnswerQuestionImage instanceof \Illuminate\Http\UploadedFile);
+
+            // VÁLTOZÁS: Itt már csak azt nézzük, hogy string-e és van-e benne tartalom
+            $hasQuestionImage = ! empty($shortAnswerQuestionImage) && is_string($shortAnswerQuestionImage);
 
             $shortAnswerAnswer = $shortAnswer['answer'] ?? null;
             $shortAnswerImage = $shortAnswer['answer_image'] ?? null;
 
             $hasAnswer = ! empty($shortAnswerAnswer);
-            $hasAnswerImage = ! empty($shortAnswerImage) && (is_string($shortAnswerImage) || $shortAnswerImage instanceof \Illuminate\Http\UploadedFile);
+            $hasAnswerImage = ! empty($shortAnswerImage) && is_string($shortAnswerImage);
 
+            // 1. Logikai ellenőrzések (Szöveg VAGY kép)
             if (! $hasQuestion && ! $hasQuestionImage) {
-                $validator->errors()->add(
-                    "tasks.$index.short_answer.questions.$gIndex",
-                    'A kérdéshez meg kell adni vagy egy kérdés szöveget, vagy egy képet.'
-                );
+                $validator->errors()->add("tasks.$index.short_answer.questions.$gIndex", 'A kérdéshez meg kell adni szöveget vagy képet.');
             }
 
             if ($hasQuestion && $hasQuestionImage) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'Nem adhatsz meg egyszerre kérdés szöveget és képet.'
-                );
+                $validator->errors()->add("tasks.$index.short_answer.questions.$gIndex", 'Nem adhatsz meg egyszerre kérdés szöveget és képet.');
             }
 
             if (! $hasAnswer && ! $hasAnswerImage) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'A válaszhoz meg kell adni vagy egy válasz szöveget, vagy egy képet.'
-                );
+                $validator->errors()->add("tasks.$index.short_answer.questions.$gIndex", 'A válaszhoz meg kell adni szöveget vagy képet.');
             }
 
             if ($hasAnswer && $hasAnswerImage) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'Nem adhatsz meg egyszerre válasz szöveget és képet.'
-                );
+                $validator->errors()->add("tasks.$index.short_answer.questions.$gIndex", 'Nem adhatsz meg egyszerre válasz szöveget és képet.');
             }
 
-            if (($hasQuestion || $hasQuestionImage) && (! $hasAnswer && ! $hasAnswerImage)) {
-                $validator->errors()->add(
-                    "tasks.$index.pairing.pairing_groups.$gIndex",
-                    'Ha van kérdés, kötelező választ is megadni.'
-                );
+            // 2. Szöveges mezők hosszának ellenőrzése
+            if ($hasQuestion && strlen($shortAnswerQuestion) > 150) {
+                $validator->errors()->add("tasks.$index.short_answer.questions.$gIndex.question", 'A kérdés max 150 karakter.');
             }
 
-            if ($hasQuestion) {
-                $this->validateStringField(
-                    $validator,
-                    $shortAnswer['question'] ?? null,
-                    "tasks.$index.short_answer.questions.$gIndex.question",
-                    'A kérdés kötelező szöveg.'
-                );
-
-                if (strlen($shortAnswer['question']) > 150) {
-                    $validator->errors()->add(
-                        "tasks.$index.short_answer.questions.$gIndex.question",
-                        'A kérdés nem lehet hosszabb, mint 150 karakter.'
-                    );
-                }
-            }
-            if ($hasAnswer) {
-                $this->validateStringField(
-                    $validator,
-                    $shortAnswer['answer'] ?? null,
-                    "tasks.$index.short_answer.questions.$gIndex.answer",
-                    'A válasz kötelező szöveg.'
-                );
-
-                if (strlen($shortAnswer['answer']) > 50) {
-                    $validator->errors()->add(
-                        "tasks.$index.short_answer.questions.$gIndex.answer",
-                        'A válasz nem lehet hosszabb, mint 50 karakter.'
-                    );
-                }
+            if ($hasAnswer && strlen($shortAnswerAnswer) > 50) {
+                $validator->errors()->add("tasks.$index.short_answer.questions.$gIndex.answer", 'A válasz max 50 karakter.');
             }
 
+            // 3. Kép elérési út validálása
+            // VÁLTOZÁS: Itt a validateIMG helyett egy egyszerű string/path validáció kell
             if ($hasQuestionImage) {
-                $this->validateIMG(
-                    $validator,
-                    $shortAnswerQuestionImage,
-                    "tasks.short_answer.questions.$gIndex.question_image"
-                );
+                $this->validateImagePath($validator, $shortAnswerQuestionImage, "tasks.$index.short_answer.questions.$gIndex.question_image");
             }
 
             if ($hasAnswerImage) {
-                $this->validateIMG(
-                    $validator,
-                    $shortAnswerImage,
-                    "tasks.short_answer.questions.$gIndex.answer_image"
-                );
+                $this->validateImagePath($validator, $shortAnswerImage, "tasks.$index.short_answer.questions.$gIndex.answer_image");
             }
         }
     }
 
     private function validateAssignment($validator, $task, $index)
     {
-        $assignmentImage = $task['assignment']['image'] ?? null;
+        $assignment = $task['assignment'] ?? null;
+        $assignmentImage = $assignment['image'] ?? null;
 
+        // 1. Kép ellenőrzése (Async path string)
         if (! $assignmentImage) {
             $validator->errors()->add(
                 "tasks.$index.assignment.image",
                 'Kötelező képet megadni.'
             );
+        } else {
+            // A korábban létrehozott string-alapú validátor hívása
+            $this->validateImagePath($validator, $assignmentImage, "tasks.$index.assignment.image");
         }
 
-        // if ($assignmentImage) {
-        //     $this->validateIMG(
-        //         $validator,
-        //         $assignmentImage,
-        //         "tasks.$index.assignment.image"
-        //     );
-        // }
+        // 2. Koordináták globális ellenőrzése
+        $coordinates = $assignment['coordinatesAndAnswers'] ?? [];
 
-        if (empty($task['assignment']['coordinatesAndAnswers'])) {
+        if (empty($coordinates)) {
             $validator->errors()->add(
                 "tasks.$index.assignment.coordinatesAndAnswers",
-                'Legalább 1 kordináta megadása kötelező.'
+                'Legalább 1 koordináta megadása kötelező.'
             );
+
+            return; // Ha nincs koordináta, felesleges tovább menni a ciklusba
         }
 
-        if (count($task['assignment']['coordinatesAndAnswers']) > 10) {
+        if (count($coordinates) > 10) {
             $validator->errors()->add(
                 "tasks.$index.assignment.coordinatesAndAnswers",
-                'Maximum 10 kordinátát adhatsz meg.'
+                'Maximum 10 koordinátát adhatsz meg.'
             );
         }
 
-        foreach ($task['assignment']['coordinatesAndAnswers'] as $cIndex => $coordinate) {
+        // 3. Koordináták és válaszok részletes ellenőrzése
+        foreach ($coordinates as $cIndex => $coordinate) {
 
-            $this->validateStringField(
-                $validator,
-                $coordinate['coordinate'] ?? null,
-                "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.coordinate",
-                'A kordináta megadása kötelező.'
-            );
-            if (count($coordinate['answers']) > 2) {
+            // Koordináta adatok megléte (pl. "x,y,w,h" string)
+            if (empty($coordinate['coordinate'])) {
                 $validator->errors()->add(
-                    "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.answers",
-                    '1 kordiánához maximum 2 válasz adható meg.'
+                    "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.coordinate",
+                    'A koordináta megadása kötelező.'
                 );
             }
+
             $answers = $coordinate['answers'] ?? [];
-            $correctCount = collect($answers)
-                ->where('isCorrect', true)
-                ->count();
+
+            // Válaszok száma koordinátánként
+            if (count($answers) > 2) {
+                $validator->errors()->add(
+                    "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.answers",
+                    'Egy koordinátához maximum 2 válasz adható meg.'
+                );
+            }
+
+            // Helyes válaszok számlálása
+            $correctCount = collect($answers)->where('isCorrect', true)->count();
 
             if ($correctCount < 1) {
                 $validator->errors()->add(
-                    "tasks.$index.coordinatesAndAnswers.$cIndex.answers",
+                    "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.answers",
                     'Legalább 1 helyes választ meg kell adni.'
                 );
             }
 
             if ($correctCount > 1) {
                 $validator->errors()->add(
-                    "tasks.$index.coordinatesAndAnswers.$cIndex.answers",
+                    "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.answers",
                     'Maximum 1 helyes válasz adható meg.'
                 );
             }
-            foreach ($coordinate['answers'] as $aIndex => $answer) {
-                $this->validateStringField(
-                    $validator,
-                    $answer['answer'] ?? null,
-                    "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.coordinate.answers$aIndex.answer",
-                    'A válasz megadása kötelező.'
-                );
+
+            // Konkrét válaszszövegek ellenőrzése
+            foreach ($answers as $aIndex => $answer) {
+                if (empty($answer['answer'])) {
+                    $validator->errors()->add(
+                        "tasks.$index.assignment.coordinatesAndAnswers.$cIndex.answers.$aIndex.answer",
+                        'A válasz megadása kötelező.'
+                    );
+                }
             }
         }
     }
@@ -508,75 +420,28 @@ class StoreWorksheetRequest extends FormRequest
         ], 422));
     }
 
-    private function validateStringField($validator, $value, $path, $message)
+    private function validateImagePath($validator, $path, $errorKey)
     {
-        if (! is_string($value) || trim($value) === '') {
-            $validator->errors()->add($path, $message);
+        if (! is_string($path)) {
+            $validator->errors()->add($errorKey, 'A kép formátuma érvénytelen.');
+
+            return;
         }
-    }
 
-    private function validateIMG($validator, $image, $path)
-    {
+        $isTemp = str_starts_with($path, 'temp/');
+        $isFinal = str_contains($path, 'group-items/original/');
 
-        if ($image instanceof \Illuminate\Http\UploadedFile) {
-            // Fájl validáció
-            if (! $image->isValid()) {
-                $validator->errors()->add(
-                    $path,
-                    'A feltöltött kép érvénytelen.'
-                );
-            }
+        if (! $isTemp && ! $isFinal) {
+            $validator->errors()->add($errorKey, 'Érvénytelen kép útvonal.');
 
-            if (! in_array($image->getMimeType(), ['image/jpeg', 'image/png', 'image/webp'])) {
-                $validator->errors()->add(
-                    $path,
-                    'Csak JPG, PNG vagy WEBP formátum engedélyezett.'
-                );
-            }
+            return;
+        }
 
-            if ($image->getSize() > 5 * 1024 * 1024) {
-                $validator->errors()->add(
-                    $path,
-                    'A kép maximum 5MB lehet.'
-                );
-            }
-
-        } elseif (is_string($image) && str_starts_with($image, 'data:image')) {
-            // Base64 validáció
-            $decoded = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $image));
-
-            if ($decoded === false) {
-                $validator->errors()->add(
-                    $path,
-                    'A Base64 kép érvénytelen.'
-                );
-            }
-
-            // Kép méret ellenőrzés
-            if (strlen($decoded) > 5 * 1024 * 1024) {
-                $validator->errors()->add(
-                    $path,
-                    'A kép maximum 5MB lehet.'
-                );
-            }
-
-            // MIME típus ellenőrzés Base64 esetén
-            preg_match('/^data:image\/(\w+);base64,/', $image, $matches);
-            $mimeType = $matches[1] ?? null;
-            if (! in_array($mimeType, ['jpeg', 'jpg', 'png', 'webp'])) {
-                $validator->errors()->add(
-                    $path,
-                    'Csak JPG, PNG vagy WEBP formátum engedélyezett.'
-                );
-            }
-
-        } else {
-            // Nem támogatott típus
+        if (! Storage::disk('public')->exists($path)) {
             $validator->errors()->add(
-                $path,
-                'A kép típusa nem támogatott.'
+                $errorKey,
+                'A megadott kép már nem található (valószínűleg már feldolgozásra került vagy lejárt).'
             );
         }
-
     }
 }

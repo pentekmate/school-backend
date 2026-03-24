@@ -78,7 +78,7 @@ class TaskResource extends JsonResource
                         return [
                             'id' => $item->id,
                             'name' => $item->name,
-                            'imgURL' => $item->imgUrl,
+                            'imgURL' => $item->imgURL,
 
                         ];
                     });
@@ -96,7 +96,7 @@ class TaskResource extends JsonResource
             'task_type' => $this->task_type->id,
             'task_id' => $this->id,
 
-            'img' => $image?->imageURL, // vagy ami az oszlop neve
+            'img' => $image?->imgURL, // vagy ami az oszlop neve
 
             'coordinates' => $image?->assignmentCoordinates
                 ->map(function ($coordinate) {
