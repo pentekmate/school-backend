@@ -34,7 +34,7 @@ class StudentUpload extends FormRequest
 
             'name.string' => 'A diák nevének típusa nem megfelelő.',
 
-            'name.max:30' => 'A diák neve túl hosszú',
+            'name.max' => 'A diák neve túl hosszú',
 
             'classroom_id.required' => 'Hiányzó adatok.',
         ];
