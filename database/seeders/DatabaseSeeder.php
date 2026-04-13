@@ -36,6 +36,10 @@ class DatabaseSeeder extends Seeder
             StudentSeeder::class,
         ]);
 
+        $this->call([
+            SolutionSeeder::class
+        ]);
+
         // Worksheet::factory()
         //     ->count(1)
         //     ->withTasks(6)
