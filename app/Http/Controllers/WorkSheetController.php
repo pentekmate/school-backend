@@ -31,9 +31,7 @@ class WorkSheetController extends Controller
 
         $worksheets = Worksheet::where('user_id', $user->id)->get(['title', 'id']);
 
-        return response()->json([
-            'Worksheets' => $worksheets,
-        ]);
+        return response()->json($worksheets);
     }
 
     /**
