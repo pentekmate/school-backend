@@ -84,51 +84,6 @@
                     }
                 ]
             }
-        },
-        {
-            "task_title": "Állatos kérdések",
-            "task_description": "Válaszolj röviden a kérdésekre",
-            "task_type_id": 3,
-            "short_answer": {
-                "questions": [
-                    {
-                        "question": "Melyik állat ugat?",
-                        "answer": "Kutya"
-                    },
-                    {
-                        "question": "Melyik állat nyávog?",
-                        "answer": "Macska"
-                    },
-                    {
-                        "question": "Melyik állat repül?",
-                        "answer": "Sas"
-                    }
-                ]
-            }
-        },
-        {
-            "task_title": "Állatok csoportosítása",
-            "task_description": "Húzd a megfelelő csoportba",
-            "task_type_id": 4,
-            "assignment": {
-                "image": "https://picsum.photos/640/480?random=6",
-                "coordinatesAndAnswers": [
-                    {
-                        "coordinate": "225,333",
-                        "answers": [
-                            {
-                                "answer":"ss",
-                                "isCorrect":true
-                            },
-                            {
-                                "answer":"ss",
-                                "isCorrect":false
-                            }
- 
-                        ]
-                    }
-                ]
-            }
         }
     ]
 }

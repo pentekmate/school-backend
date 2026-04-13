@@ -31,7 +31,9 @@ class WorkSheetController extends Controller
 
         $worksheets = Worksheet::where('user_id', $user->id)->get(['title', 'id']);
 
-        return response()->json($worksheets);
+        return response()->json(
+            $worksheets,
+        );
     }
 
     /**
@@ -62,6 +64,39 @@ class WorkSheetController extends Controller
         request()->merge(['current_solution_id' => $solution->id ?? null]);
 
         return new WorksheetResultResource($worksheet);
+    }
+
+    public function workSheetUserAnswers($worksheet_id)
+    {
+        $worksheet = Worksheet::with(['solutions.student', 'solutions.items', 'tasks'])->findOrFail($worksheet_id);
+
+        $this->authorize('show', $worksheet);
+
+        return response()->json([
+            'worksheet_id' => $worksheet->id,
+            'tasks' => $worksheet->tasks->map(function ($task) {
+                return [
+                    'task_id' => $task->id,
+                    'task_title' => $task->task_title,
+                ];
+            }),
+            'solutions' => $worksheet->solutions->map(function ($solution) {
+                return [
+                    'id' => $solution->id,
+                    'student_id' => $solution->student_id,
+                    'student_name' => $solution->student ? $solution->student->name : 'Ismeretlen diák',
+                    'totalScore' => $solution->score,
+
+                    // Itt adjuk hozzá a részpontokat:
+                    'details' => $solution->items->map(function ($item) {
+                        return [
+                            'task_id' => $item->task_id,
+                            'score' => $item->score,
+                        ];
+                    }),
+                ];
+            }),
+        ]);
     }
 
     /**

@@ -119,6 +119,11 @@ return new class extends Migration
             $table->foreign('worksheet_id')->references('id')->on('worksheets')->cascadeOnDelete();
         });
 
+        Schema::table('worksheet_solution_items', function (Blueprint $table) {
+            $table->foreign('worksheet_solution_id')->references('id')->on('worksheet_solutions')->cascadeOnDelete();
+            $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
+        });
+
     }
 
     public function down(): void
@@ -207,6 +212,11 @@ return new class extends Migration
         Schema::table('class_worksheets', function (Blueprint $table) {
             $table->dropForeign(['classroom_id']);
             $table->dropForeign(['worksheet_id']);
+        });
+
+        Schema::table('worksheet_solution_items', function (Blueprint $table) {
+            $table->dropForeign(['worksheet_solution_id']);
+            $table->dropForeign(['task_id']);
         });
 
     }

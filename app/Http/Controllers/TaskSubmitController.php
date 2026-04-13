@@ -46,7 +46,12 @@ class TaskSubmitController extends Controller
                 'score' => $taskScore,
             ];
         }
-
+        foreach ($taskResults as $res) {
+            $worksheetSolution->items()->create([
+                'task_id' => $res['task_id'],
+                'score' => $res['score'],
+            ]);
+        }
         $worksheetSolution->update(['score' => $totalScore]);
 
         Cache::forget('active_session_'.$token);

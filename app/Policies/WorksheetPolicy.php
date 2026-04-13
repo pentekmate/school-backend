@@ -34,4 +34,14 @@ class WorksheetPolicy
 
         return Response::allow();
     }
+
+    public function show(User $user, Worksheet $worksheet): Response
+    {
+
+        if ($user->id !== $worksheet->user_id) {
+            return Response::deny('Ez nem a te feladatlapod.');
+        }
+
+        return Response::allow();
+    }
 }

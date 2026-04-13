@@ -56,8 +56,8 @@ class ClassroomController extends Controller
 
         return response()->json([
             'students' => $classroom->students,
-            'classroom_name'=>$classroom->name,
-            'classroom_id'=>$classroom_id
+            'classroom_name' => $classroom->name,
+            'classroom_id' => $classroom_id,
         ]);
     }
 

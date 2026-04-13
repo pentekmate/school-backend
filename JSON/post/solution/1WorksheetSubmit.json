@@ -29,35 +29,7 @@
                     "answer_id": 3
                 }
             ]
-        },
-        {
-            "task_id": 3,
-            "task_type_id": 3,
-            "solutions": [
-                {
-                    "question_id": 1,
-                    "answer": "kutya"
-                }
-            ]
-        },
-        {
-            "task_id": 4,
-            "task_type_id": 4,
-            "solutions": [
-                {
-                    "img_id": 1,
-                    "answers": [
-                        {
-                            "coordinate_id": 1,
-                            "answer_id": 2
-                        },
-                        {
-                            "coordinate_id": 1,
-                            "answer_id": 1
-                        }
-                    ]
-                }
-            ]
         }
+
     ]
 }
