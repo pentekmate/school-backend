@@ -19,9 +19,7 @@ class ClassroomController extends Controller
         $user_id = Auth::id();
         $classrooms = Classroom::where('user_id', $user_id)->get(['name', 'id']);
 
-        return response()->json([
-            'classRooms' => $classrooms,
-        ]);
+        return response()->json($classrooms);
     }
 
     /**
@@ -58,8 +56,8 @@ class ClassroomController extends Controller
 
         return response()->json([
             'students' => $classroom->students,
-            'classroom_name'=>$classroom->name,
-            'classroom_id'=>$classroom_id
+            'classroom_name' => $classroom->name,
+            'classroom_id' => $classroom_id,
         ]);
     }
 

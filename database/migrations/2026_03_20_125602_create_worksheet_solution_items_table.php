@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('worksheet_solutions', function (Blueprint $table) {
+        Schema::create('worksheet_solution_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('worksheet_solution_id');
+            $table->unsignedBigInteger('task_id'); // A feladat azonosítója
+            $table->integer('score'); // Erre a feladatra kapott pont
             $table->timestamps();
-            $table->unsignedBigInteger('worksheet_id');
-            $table->unsignedBigInteger('student_id')->unique();
-            $table->integer('score');
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('worksheet_soultions');
+        Schema::dropIfExists('worksheet_solution_items');
     }
 };

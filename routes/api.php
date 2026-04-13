@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'store', 'destroy', 'update']);
     Route::get('/worksheet/{worksheetId}/userAnswer/{student_id}', [WorksheetController::class, 'userAnswer']);
     Route::post('media-upload', [MediaController::class, 'upload']);
+    Route::get('/worksheetUserSolutions/{worksheet_id}', [WorkSheetController::class, 'workSheetUserAnswers']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });
