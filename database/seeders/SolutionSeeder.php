@@ -35,7 +35,7 @@ class SolutionSeeder extends Seeder
                 ['task_id' => 6, 'score' => 1],
                 ['task_id' => 7, 'score' => 1],
                 ['task_id' => 8, 'score' => 1],
-                ['task_id' => 9, 'score' => 1],  
+                ['task_id' => 9, 'score' => 1],
                 ['task_id' => 10, 'score' => 1],
             ]);
         }

@@ -12,7 +12,7 @@ class MediaController extends Controller
     {
         $request->validate([
             'file' => 'required|image|max:5120',
-        ],[
+        ], [
 
             'file.required' => 'Hiányzó adatok.',
             'file.image' => 'A kép kiterjesztése .jpg, .png, .webp',

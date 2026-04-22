@@ -17,8 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
 
         $middleware->validateCsrfTokens(except: [
-        '/api/*', // Opcionális: ha bizonyos api végpontoknál nem kell CSRF
-    ]);
+            '/api/*', // Opcionális: ha bizonyos api végpontoknál nem kell CSRF
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('worksheet_id');
             $table->unsignedBigInteger('task_type_id');
             $table->string('task_title');
-            $table->string('task_description');
+            $table->string('task_description')->nullable();
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Jobs\ProcessImage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ImageUploadService
@@ -13,15 +14,22 @@ class ImageUploadService
      */
     public function finalizeTempImage(string $tempPath): string
     {
+        // 1. Logoljuk, mit kapunk
+        Log::info('Fájl mozgatása indul: '.$tempPath);
+
         if (str_starts_with($tempPath, 'temp/')) {
             $fileName = basename($tempPath);
-            $finalPath = "/$fileName";
+            $finalPath = "/".$fileName; 
 
             if (Storage::disk('public')->exists($tempPath)) {
                 Storage::disk('public')->move($tempPath, $finalPath);
-                ProcessImage::dispatch($finalPath);
+                Log::info('Sikeres mozgatás ide: '.$finalPath);
+
+                // ProcessImage::dispatch($finalPath);
 
                 return $finalPath;
+            } else {
+                Log::error('A fájl nem létezik a public disken: '.$tempPath);
             }
         }
 

@@ -32,13 +32,13 @@ class ClassroomController extends Controller
                 'required',
                 'string',
                 'max:30',
-                'regex:/^\d{1,2}\..+/'
+                'regex:/^\d{1,2}\..+/',
             ],
         ], [
             'name.required' => 'Hiányzó adatok.',
-            'name.string'   => 'Nem megfelelő adat.',
-            'name.max'      => 'Nem megfelelő adat.',
-            'name.regex'    => 'A névnek számmal és ponttal kell kezdődnie (pl. 1.c vagy 12.b).',
+            'name.string' => 'Nem megfelelő adat.',
+            'name.max' => 'Nem megfelelő adat.',
+            'name.regex' => 'A névnek számmal és ponttal kell kezdődnie (pl. 1.c vagy 12.b).',
         ]);
 
         $newClassroom = Classroom::create([
@@ -48,7 +48,7 @@ class ClassroomController extends Controller
 
         return response()->json([
             'message' => 'Sikeres osztály létrehozás.',
-            'classroom'=>$newClassroom
+            'classroom' => $newClassroom,
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace App\Services\Tasks;
 use App\Models\Task;
 use App\Services\ImageUploadService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class StorePairingTaskService
 {
@@ -42,18 +43,25 @@ class StorePairingTaskService
      */
     private function resolveImagePath($input): ?string
     {
+        
         if (empty($input)) {
             return null;
         }
         if ($input instanceof UploadedFile) {
+            
+
             return $this->imageUploadService->store($input);
         }
 
         if (is_string($input)) {
             if (str_starts_with($input, 'data:image')) {
+                
+
                 return $this->imageUploadService->storeBase64($input);
             }
             if (str_starts_with($input, 'temp/')) {
+               
+
                 return $this->imageUploadService->finalizeTempImage($input);
             }
 
