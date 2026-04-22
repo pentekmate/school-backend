@@ -21,7 +21,9 @@ class MediaController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $fileName = Str::uuid().'.'.$file->getClientOriginalExtension();
+            $originalName = $file->getClientOriginalName();
+            $fileName = Str::uuid().'--'.$originalName.'.'.$file->getClientOriginalExtension();
+          
 
             $path = $file->storeAs('temp', $fileName, 'public');
 
