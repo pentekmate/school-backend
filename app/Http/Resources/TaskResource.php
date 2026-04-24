@@ -34,7 +34,7 @@ class TaskResource extends JsonResource
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
-            'task_type' => $this->task_type->id,
+            'task_type_id' => $this->task_type->id,
 
             'task_id' => $this->id,
 
@@ -60,7 +60,7 @@ class TaskResource extends JsonResource
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
-            'task_type' => $this->task_type->id,
+            'task_type_id' => $this->task_type->id,
 
             'task_id' => $this->id,
 
@@ -93,7 +93,7 @@ class TaskResource extends JsonResource
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
-            'task_type' => $this->task_type->id,
+            'task_type_id' => $this->task_type->id,
             'task_id' => $this->id,
 
             'img' => $image?->imgURL, // vagy ami az oszlop neve
@@ -126,7 +126,7 @@ class TaskResource extends JsonResource
         return [
             'task_title' => $this->task_title,
             'task_description' => $this->task_description,
-            'task_type' => $this->task_type->id,
+            'task_type_id' => $this->task_type->id,
 
             'task_id' => $this->id,
 
