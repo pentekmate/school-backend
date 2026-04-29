@@ -34,7 +34,14 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->where('id', $request->user()->currentAccessToken()->id)->delete();
+        // 1. Kijelentkeztetjük a felhasználót a Guard segítségével
+        Auth::guard('web')->logout();
+
+        // 2. Érvénytelenítjük a jelenlegi session-t
+        $request->session()->invalidate();
+
+        // 3. Újrageneráljuk a CSRF tokent a biztonság érdekében
+        $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Sikeres kijelentkezés',
